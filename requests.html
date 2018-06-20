@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ride My Way | Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css" />
+</head>
+<body id="request-body">
+
+    <div class="modal" id="add-offer-modal"><!--ADD OFFER MODAL STARTS-->
+        <div class="modal-content animate">
+            <form action="#" method="POST">
+                <div class="row">
+                    <p class="success-message small center-text"></p>
+                    <div class="co-xl-12 co-lg-12 co-md-12 co-sm-12">
+                        <p class="smaller">Destination <span class="error-message">  </span> </p>
+                        <input type="text" name="destination">
+                    </div>
+
+                    <div class="co-xl-6 co-lg-6 co-md-6 co-sm-6">
+                        <p class="smaller">Date <span class="error-message">  </span> </p>
+                        <input type="date" name="date">
+                    </div>
+
+                    <div class="co-xl-6 co-lg-6 co-md-6 co-sm-6">
+                        <p class="smaller">Time <span class="error-message">  </span> </p>
+                        <input type="time" name="time">
+                    </div>
+
+                    <div class="co-xl-12 co-lg-12 co-md-12 co-sm-12">
+                        <p class="smaller">Takeoff Venue <span class="error-message">  </span> </p>
+                        <input type="text" name="takeoff_venue">
+                    </div>
+
+                    <div class="co-xl-12 co-lg-12 co-md-12 co-sm-12 right-text">
+                        <button type="button" class="button button-white close">CLOSE</button>                        
+                        <button type="submit" class="button button-blue create">CREATE OFFER</button>                      
+                    </div>
+                    
+                    
+                </div>
+            </form>
+        </div>
+    </div><!--OFFER A RIDE MODAL END-->
+
+    <div class="modal" id="reject-ride-request-modal"><!--REJECT OFFER MODAL STARTS-->
+        <div class="modal-content animate">
+            <div class="tile">
+                <div class="tile-body center-text">
+                    <p class="confirm-msg small">Are you sure you want to REJECT a ride request from <span>John</span> </p>
+                    <p class="error-message smaller"></p>
+                </div>
+
+                <div class="tile-footer center-text">
+                    <button class="button button-blue close">CLOSE</button>
+                    <button class="button button-white reject-btn">REJECT</button>
+                </div>
+            </div>
+        </div>
+    </div><!--REJECT OFFER MODAL ENDS-->
+    
+    <nav class="navigation">
+        <div class="navbar wrapper">
+            <p class="navbar-toggle small">MENU</p>
+            <ul class="nav-items nav-left">
+                <li class="nav-item"> <a href="./index.html">RMW</a> </li>
+            </ul>
+            <ul class="nav-items nav-right">
+                <li class="nav-item"> <a href="./home.html">Home</a> </li>
+                <li class="nav-item"> <a href="#">Offer A Ride</a> </li>
+                <li class="nav-item"> <a href="./profile.html">Profile</a> </li>
+                <li class="nav-item"> <a href="./index.html">Logout</a> </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="submenu row">
+        <a href="./home.html" class="co-xl-6 co-lg-6 co-md-6 co-sm-6 co-xs-6 center-text border">
+            <p >RIDE OFFERS</p>
+        </a>
+        <a href="./requests.html" class="link active co-xl-6 co-lg-6 co-md-6 co-sm-6 co-xs-6 center-text">
+            <p >MY RIDE REQUESTS</p>
+        </a>
+    </div>
+
+    
+
+
+    <main class="wrapper dropdown center-text">
+
+        <div id="1" class="row inner-container">
+            
+            <div class="request-msg  co-xl-7 co-lg-7 co-md-7 co-sm-12 center-text">
+                <p class="small"> <strong>Haruna</strong> want to ride with you to <strong>Ketu</strong></p>
+            </div>
+            <div class="co-xl-5 co-lg-5 co-md-5 co-sm-12">
+                <button class="button button-blue accept-btn">ACCEPT</button>
+                <button class="button button-white reject-btn">REJECT</button>
+            </div>
+        </div>
+
+        <div id="2" class="row inner-container">
+            
+            <div class="request-msg  co-xl-7 co-lg-7 co-md-7 co-sm-12 center-text">
+                <p class="small"> <strong>Johngorithm</strong> want to ride with you to <strong>Ketu</strong></p>
+            </div>
+            <div class="co-xl-5 co-lg-5 co-md-5 co-sm-12">
+                <button class="button button-blue accept-btn">ACCEPT</button>
+                <button class="button button-white reject-btn">REJECT</button>
+            </div>
+        </div>
+
+        <div id="3" class="row inner-container">
+            
+            <div class="request-msg  co-xl-7 co-lg-7 co-md-7 co-sm-12 center-text">
+                <p class="small"> <strong>Oluwatobiloba</strong> want to ride with you to <strong>Ketu</strong></p>
+            </div>
+            <div class="co-xl-5 co-lg-5 co-md-5 co-sm-12">
+                <button class="button button-blue accept-btn">ACCEPT</button>
+                <button class="button button-white reject-btn">REJECT</button>
+            </div>
+        </div>
+
+        <div id="4" class="row inner-container">
+            
+            <div class="request-msg  co-xl-7 co-lg-7 co-md-7 co-sm-12 center-text">
+                <p class="small"> <strong>Vivian</strong> want to ride with you to <strong>Ketu</strong></p>
+            </div>
+            <div class="co-xl-5 co-lg-5 co-md-5 co-sm-12">
+                <button class="button button-blue accept-btn">ACCEPT</button>
+                <button class="button button-white reject-btn">REJECT</button>
+            </div>
+        </div>
+
+        <div id="5" class="row inner-container">
+            
+            <div class="request-msg  co-xl-7 co-lg-7 co-md-7 co-sm-12 center-text">
+                <p class="small"> <strong>Michael</strong> want to ride with you to <strong>Ketu</strong></p>
+            </div>
+            <div class="co-xl-5 co-lg-5 co-md-5 co-sm-12">
+                <button class="button button-blue accept-btn">ACCEPT</button>
+                <button class="button button-white reject-btn">REJECT</button>
+            </div>
+        </div>
+
+        <div id="6" class="row inner-container">
+            
+            <div class="request-msg  co-xl-7 co-lg-7 co-md-7 co-sm-12 center-text">
+                <p class="small"> <strong id="passenger">Annabel</strong> want to ride with you to <strong>Ikorodu</strong></p>
+            </div>
+            <div class="co-xl-5 co-lg-5 co-md-5 co-sm-12">
+                <button class="button button-blue accept-btn">ACCEPT</button>
+                <button class="button button-white reject-btn">REJECT</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="./js/jquery.min.js"></script>  
+    <script src="./js/main.js"></script>    
+</body>
+</html>
