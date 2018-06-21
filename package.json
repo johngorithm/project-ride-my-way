@@ -9,7 +9,8 @@
   "scripts": {
     "build": "babel src -d build",
     "start": "node ./build/app.js",
-    "go": "npm run build && npm start"
+    "go": "npm run build && nodemon ./build/app.js",
+    "test": "mocha --timeout 10000"
   },
   "author": "",
   "license": "ISC",

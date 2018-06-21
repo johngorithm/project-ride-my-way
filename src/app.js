@@ -1,14 +1,14 @@
 import express from 'express';
-import rideRoutes from './routes/rides';
+// import rideRoutes from './routes/rides';
 
 const app = express();
 
 // middlewares
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 // app.use('/api/v1/rides/:rideId', routeGetSingleRide);
-//app.use('/api/v1/rides', rideRoutes);
+// app.use('/api/v1/rides', rideRoutes);
 
 
 app.listen(5000, () => {
