@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "babel src -d build",
+    "test": "mocha ./build/test/*.js --exit --timeout 10000",
     "start": "node ./build/app.js",
     "go": "npm run build && npm start"
   },
