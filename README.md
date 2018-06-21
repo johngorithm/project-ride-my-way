@@ -1,5 +1,5 @@
 # ride-my-way
-
+[![Build Status](https://travis-ci.org/johngorithm/project-ride-my-way.svg?branch=master)](https://travis-ci.org/johngorithm/project-ride-my-way)
 
 # Project Overview  
 
