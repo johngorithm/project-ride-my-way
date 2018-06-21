@@ -11,5 +11,3 @@ before_script:
 
 scripts:
   - "npm start"
-
-after_success: coveralls
