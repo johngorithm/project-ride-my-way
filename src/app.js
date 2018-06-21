@@ -11,6 +11,9 @@ app.use(express.urlencoded({ extended: true }));
 // app.use('/api/v1/rides', rideRoutes);
 
 
-app.listen(5000, () => {
+app.listen(8000, () => {
   console.log('Server started at port: 5000');
 });
+
+
+export default app;
