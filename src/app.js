@@ -1,5 +1,5 @@
 import express from 'express';
-// import rideRoutes from './routes/rides';
+import rideRoutes from './routes/rides';
 
 const app = express();
 
@@ -7,12 +7,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use('/api/v1/rides/:rideId', routeGetSingleRide);
-// app.use('/api/v1/rides', rideRoutes);
+// routes
+app.use('/api/v1/rides', rideRoutes);
 
-
-app.listen(8000, () => {
-  console.log('Server started at port: 5000');
+let port = 8000;
+app.listen(port, () => {
+  console.log(`Server started at port: ${port}`);
 });
 
 
