@@ -17,11 +17,11 @@ route.post('/', (req, res) => {
   const rideKeys = Object.keys(Rides);
   let maxKey = Math.max(...rideKeys);
   Rides[maxKey + 1] = newRide;
-  res.send(`You ride to ${newRide.destination} was successfully created`);
+  res.json({ message: `You ride to ${newRide.destination} was successfully created`, status: 'success', data: newRide });
 });
 
 route.post('/:rideId/request', (req, res) => {
-  const id = req.params.rideId;
+  const id = Number(req.params.rideId);
   const requestKeys = Object.keys(RideRequests);
   let maxRequestKey = Math.max(...requestKeys);
   // STATUS: [pending,accepted,rejected]
@@ -32,7 +32,7 @@ route.post('/:rideId/request', (req, res) => {
     status: 'pending',
   };
   RideRequests[maxRequestKey + 1] = newRequest;
-  res.json('Your request has been successfully received, You will be notified if Accepted!');
+  res.json({ message: 'Your request has been successfully received, You will be notified if Accepted!', status: 'success', data: newRequest });
 });
 
 export default route;
