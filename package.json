@@ -8,10 +8,9 @@
   },
   "scripts": {
     "build": "babel src -d build",
-    "test": "nyc mocha ./build/test/*.test.js --exit --timeout 10000 -x *.test.js",
     "start": "node ./build/app.js",
     "go": "npm run build && node npm start",
-    "coverage": "nyc --reporter=lcov --reporter=text-lcov npm test"
+    "test": "nyc --reporter=lcov --reporter=text-lcov nyc mocha ./build/test/*.test.js --exit --timeout 10000 -x *.test.js"
   },
   "author": "",
   "license": "ISC",
