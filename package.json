@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "babel src -d build",
-    "test": "nyc mocha ./build/test/*.test.js --exit --timeout 10000 -x *.test.js",
+    "test": "nyc mocha ./build/test/*.test.js --exit --timeout 10000 -x *.test.js && npm run coverage",
     "start": "node ./build/app.js",
     "go": "npm run build && node npm start",
     "coverage": "nyc --reporter=lcov --reporter=text-lcov npm test"
