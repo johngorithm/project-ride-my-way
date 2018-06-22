@@ -14,5 +14,3 @@ scripts:
 
 after_script:
   - "npm run coverage"
-
-after_success: coveralls
