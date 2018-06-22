@@ -4,14 +4,14 @@
   "description": "",
   "main": "app.js",
   "directories": {
-    "test": "tests"
+    "test": "test"
   },
   "scripts": {
     "build": "babel src -d build",
     "start": "node ./build/app.js",
     "go": "npm run build && node npm start",
-    "test": "nyc mocha ./build/test/*.test.js --exit --timeout 10000 -x *.test.js",
-    "coverage": "nyc --reporter=lcov --reporter=text-lcov npm test"
+    "test": "nyc --reporter=html --reporter=text mocha ./build/test/*.test.js --exit --timeout=20000",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "",
   "license": "ISC",

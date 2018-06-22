@@ -12,5 +12,4 @@ before_script:
 scripts:
   - "npm test"
 
-after_script:
-  - "npm run coverage"
+after_success: "npm run coverage"
