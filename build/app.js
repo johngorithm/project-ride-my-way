@@ -23,7 +23,7 @@ app.use(_express2.default.urlencoded({ extended: true }));
 // routes
 app.use('/api/v1/rides', _rides2.default);
 
-var port = 8000;
+var port = process.env.PORT || 8000;
 app.listen(port, function () {
   console.log('Server started at port: ' + port);
 });
