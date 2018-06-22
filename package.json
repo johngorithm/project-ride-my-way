@@ -11,7 +11,7 @@
     "start": "node ./build/app.js",
     "go": "npm run build && node npm start",
     "test": "nyc mocha ./build/test/*.test.js --exit --timeout 10000 -x *.test.js",
-    "coverage": "nyc --reporter=lcov --reporter=text-lcov"
+    "coverage": "nyc --reporter=lcov --reporter=text-lcov npm test"
   },
   "author": "",
   "license": "ISC",
