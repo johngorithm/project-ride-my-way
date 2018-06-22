@@ -20,7 +20,14 @@ var app = (0, _express2.default)();
 app.use(_express2.default.json());
 app.use(_express2.default.urlencoded({ extended: true }));
 
+// static
+app.use(_express2.default.static(__dirname + '/public'));
+
 // routes
+app.get('/', function (req, res) {
+  res.sendFile('index.html');
+});
+
 app.use('/api/v1/rides', _rides2.default);
 
 var port = process.env.PORT || 8000;

@@ -1,0 +1,42 @@
+.square h4, .square p {
+  padding: 0;
+  margin: 0;
+}
+.container {
+  width: 80%;
+  margin: 20px auto;
+}
+@media only screen and (min-width: 800px) {
+  .container {
+    width: 50%;
+  }
+}
+.square {
+  border-radius: 3px;
+  padding: 0;
+}
+
+.square h4 {
+  border-bottom: 1px solid rgb(231, 226, 226);
+  padding: 10px 5px;
+  background: rgb(250, 245, 245);
+  font-size: 90%;
+}
+.square p {
+  padding: 10px 5px;
+  font-size: 80%;
+}
+.square span {
+  color: dodgerblue;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+@media only screen and (max-width: 535px) {
+  .square h4 {
+  font-size: 13px;
+}
+.square p {
+  padding: 10px 5px;
+  font-size: 11px;
+}
+}
+
