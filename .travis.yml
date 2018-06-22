@@ -10,4 +10,7 @@ before_script:
   - "npm run build"
 
 scripts:
-  - "npm start"
+  - "npm test"
+  - "npm run coverage"
+
+after_success: coveralls
