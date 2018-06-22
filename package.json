@@ -10,7 +10,8 @@
     "build": "babel src -d build",
     "start": "node ./build/app.js",
     "go": "npm run build && node npm start",
-    "test": "nyc --reporter=lcov --reporter=text-lcov nyc mocha ./build/test/*.test.js --exit --timeout 10000 -x *.test.js"
+    "test": "nyc mocha ./build/test/*.test.js --exit --timeout 10000 -x *.test.js",
+    "coverage": "nyc --reporter=lcov --reporter=text-lcov"
   },
   "author": "",
   "license": "ISC",
