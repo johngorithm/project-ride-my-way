@@ -11,7 +11,7 @@ route.get('/:rideId', (req, res) => {
   const id = req.params.rideId;
   // checking to see if the requested ride exist
   if (!Object.prototype.hasOwnProperty.call(Rides, id)) {
-    res.status(404).send('Not Found');
+    res.status(404).json({ message: 'This ride offer does not exist or may have been deleted', status: 'failure', data: {}, error: 'Ride Not Found!' });
   }
   res.json(Rides[id]);
 });
