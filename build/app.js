@@ -10,7 +10,7 @@ var _express2 = _interopRequireDefault(_express);
 
 var _rides = require('./routes/rides');
 
-var _rides2 = _interopRequireDefault(_rides);
+var _index = require('./routes/index');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24,11 +24,8 @@ app.use(_express2.default.urlencoded({ extended: true }));
 app.use(_express2.default.static(__dirname + '/public'));
 
 // routes
-app.get('/', function (req, res) {
-  res.sendFile('index.html');
-});
-
-app.use('/api/v1/rides', _rides2.default);
+app.use('/', _index.indexRoute);
+app.use('/api/v1/rides', _rides.rideRoutes);
 
 var port = process.env.PORT || 8000;
 app.listen(port, function () {

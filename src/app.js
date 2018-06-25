@@ -1,5 +1,6 @@
 import express from 'express';
-import rideRoutes from './routes/rides';
+import { rideRoutes } from './routes/rides';
+import { indexRoute } from './routes/index';
 
 const app = express();
 
@@ -11,10 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
 
 // routes
-app.get('/', (req, res) => {
-  res.sendFile('index.html');
-});
-
+app.use('/', indexRoute);
 app.use('/api/v1/rides', rideRoutes);
 
 

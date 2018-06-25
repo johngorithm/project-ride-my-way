@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.rideRoutes = undefined;
 
 var _express = require('express');
 
@@ -22,30 +23,113 @@ route.get('/', function (req, res) {
 
 route.get('/:rideId', function (req, res) {
   var id = req.params.rideId;
+  // checking to see if the requested ride exist
+  if (!Object.prototype.hasOwnProperty.call(_data.Rides, id)) {
+    res.status(404).send('Not Found');
+  }
   res.json(_data.Rides[id]);
 });
 
 route.post('/', function (req, res) {
+  var fieldErrors = {};
   var newRide = req.body;
-  var rideKeys = Object.keys(_data.Rides);
-  var maxKey = Math.max.apply(Math, _toConsumableArray(rideKeys));
-  _data.Rides[maxKey + 1] = newRide;
-  res.json({ message: 'You ride to ' + newRide.destination + ' was successfully created', status: 'success', data: newRide });
+  var destination = newRide.destination,
+      date = newRide.date,
+      time = newRide.time;
+
+
+  var willSave = true;
+
+  if (typeof destination === 'string') {
+    if (destination.trim() === '') {
+      fieldErrors.destination = 'destination is required';
+      willSave = false;
+    }
+  } else if (destination === undefined) {
+    fieldErrors.destination = 'destination is required';
+    willSave = false;
+  }
+
+  if (typeof date === 'string') {
+    if (date.trim() === '') {
+      fieldErrors.date = 'date is required';
+      willSave = false;
+    }
+  } else if (date === undefined) {
+    fieldErrors.date = 'date is required';
+    willSave = false;
+  }
+
+  if (typeof time === 'string') {
+    if (time.trim() === '') {
+      fieldErrors.time = 'time is required';
+      willSave = false;
+    }
+  } else if (time === undefined) {
+    fieldErrors.time = 'time is required';
+    willSave = false;
+  }
+
+  // driver name is got from params.user.displayName
+
+  if (willSave === true) {
+    // restructuring the new ride
+    var creator = {
+      username: 'req.user.username',
+      displayName: 'req.user.displayName'
+    };
+    // using default driver display name
+    newRide.creator = creator;
+    newRide.requests = [];
+
+    var rideKeys = Object.keys(_data.Rides);
+    var maxKey = Math.max.apply(Math, _toConsumableArray(rideKeys));
+
+    _data.Rides[maxKey + 1] = newRide;
+    res.json({ message: 'You ride to ' + newRide.destination + ' was successfully created', status: 'success', data: newRide });
+  } else {
+    res.status(404).json({ message: 'Required field(s) is/are missing', status: 'failure', data: newRide, errors: fieldErrors });
+  }
 });
 
-route.post('/:rideId/request', function (req, res) {
-  var id = Number(req.params.rideId);
-  var requestKeys = Object.keys(_data.RideRequests);
-  var maxRequestKey = Math.max.apply(Math, _toConsumableArray(requestKeys));
-  // STATUS: [pending,accepted,rejected]
-  // TODO: Check if user is a friend to the driver and add isMyFriend property to the newRequest
-  var newRequest = {
-    passenger: req.body.passenger,
-    ride_id: id,
-    status: 'pending'
-  };
-  _data.RideRequests[maxRequestKey + 1] = newRequest;
-  res.json({ message: 'Your request has been successfully received, You will be notified if Accepted!', status: 'success', data: newRequest });
+route.post('/:ride_id/request', function (req, res) {
+  var rideId = req.params.ride_id;
+  if (Object.prototype.hasOwnProperty.call(_data.Rides, rideId)) {
+    var id = Number(rideId);
+    // STATUS: [pending,accepted,rejected]
+    // TODO: Check if user is a friend to the driver and add isMyFriend property to the newRequest
+    // username: req.user.username
+    // displayName: req.user.displayName
+    var newRequest = {
+      passenger: {
+        username: 'femoo',
+        displayName: 'Femi'
+      },
+      status: 'pending',
+      requestDate: Date.now()
+    };
+    // ride offer creator
+    var creator = _data.Rides[rideId].creator.username;
+    // check if the person send this request is a friend to the ride creator
+    if (_data.Users[creator].friends.includes(newRequest.passenger.username)) {
+      newRequest.isMyFriend = true;
+    } else {
+      newRequest.isMyFriend = false;
+    }
+
+    // giving the request a unique id
+    var availableRequestKeys = [];
+    _data.Rides[rideId].requests.forEach(function (request) {
+      availableRequestKeys.push(request.id);
+    });
+    var maxRequestKey = Math.max.apply(Math, availableRequestKeys);
+    newRequest.id = maxRequestKey + 1;
+    // save the new ride request
+    _data.Rides[rideId].requests.push(newRequest);
+    res.json({ message: 'Your request has been successfully received, You will be notified if Accepted!', status: 'success', data: newRequest });
+  } else {
+    res.status(404).json({ message: 'The ride you are requesting does not exist or may have been deleted', status: 'failure', data: {}, error: 'Ride Not Found!' });
+  }
 });
 
-exports.default = route;
+exports.rideRoutes = route;

@@ -17,6 +17,29 @@ describe('Test for Ride My Way Api endpoints', () => {
     });
   });
 
+  describe('Index end-point TESTS', () => {
+    it('`/` should return a status code of 200', (done) => {
+      chai.request(app).get('/').end((error, response) => {
+        response.should.have.status(200);
+        done();
+      });
+    });
+
+    it('`/` should not return an error', (done) => {
+      chai.request(app).get('/').end((error, response) => {
+        should.not.exist(error);
+        done();
+      });
+    });
+
+    it('`/` should return a content of type HTML', (done) => {
+      chai.request(app).get('/').end((error, response) => {
+        response.type.should.equal('text/html');
+        done();
+      });
+    });
+  });
+
   describe('/rides TESTS', () => {
     it('/rides should return with a content-Type of json', (done) => {
       chai.request(app).get('/api/v1/rides').end((error, response) => {
@@ -71,9 +94,9 @@ describe('Test for Ride My Way Api endpoints', () => {
       });
     });
 
-    it('/rides/<id> should return only 1 object with 4 properties', (done) => {
+    it('/rides/<id> should return only 1 object with 5 properties', (done) => {
       chai.request(app).get('/api/v1/rides/1').end((error, response) => {
-        Object.keys(response.body).length.should.equal(4);
+        Object.keys(response.body).length.should.equal(5);
         done();
       });
     });
@@ -86,15 +109,28 @@ describe('Test for Ride My Way Api endpoints', () => {
           done();
         });
     });
+
+    it('/rides/<id> should return with a status of 404 when ride does not exist in the data store', (done) => {
+      chai.request(app)
+        .get('/api/v1/rides/65645')
+        .end((error, response) => {
+          response.status.should.equal(404);
+          done();
+        });
+    });
   });
 
   describe('POST /rides endpoint TESTS', () => {
+    // good Data
     const ride = {
       destination: 'Oja',
       time: '5:00 PM',
-      data: '30/6/2018',
+      date: '30/6/2018',
       driver: 'New Man',
     };
+
+    // bad Data
+    const badData = {};
 
     it('POST to /rides should return with a status code of 200', (done) => {
       chai.request(app)
@@ -148,16 +184,84 @@ describe('Test for Ride My Way Api endpoints', () => {
           done();
         });
     });
+
+    // testing bad data
+    it('POST to /rides with missing required fields returns an object with errors property', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides')
+        .send(badData)
+        .end((error, response) => {
+          response.body.should.have.property('errors');
+          done();
+        });
+    });
+
+    it('POST to /rides with missing required fields returns an object with `errors` property containing an object', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides')
+        .send(badData)
+        .end((error, response) => {
+          response.body.errors.should.have.property('destination');
+          response.body.errors.should.be.an('object');
+          done();
+        });
+    });
+
+    it('POST to /rides with missing required fields returns with an object property `status` equal to `failure`', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides')
+        .send(badData)
+        .end((error, response) => {
+          response.body.should.have.property('status');
+          response.body.status.should.have.equal('failure');
+          done();
+        });
+    });
+
+    it('POST to /rides with missing required fields returns with an object property `message` equal to `Required field(s) is/are missing`', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides')
+        .send(badData)
+        .end((error, response) => {
+          response.body.should.have.property('message');
+          response.body.message.should.have.equal('Required field(s) is/are missing');
+          done();
+        });
+    });
+
+    it('POST to /rides should return with a status code of 404:Bad Request', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides')
+        .send(badData)
+        .end((error, response) => {
+          response.status.should.equal(404);
+          done();
+        });
+    });
+
+    // Handles Fields with empty strings as values
+    const emptyFields = {
+      destination: '',
+      time: '',
+      date: '',
+    };
+
+    it('POST to /rides should return with a status code of 404:Bad Request for empty strings required property values', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides')
+        .send(emptyFields)
+        .end((error, response) => {
+          response.status.should.equal(404);
+          done();
+        });
+    });
   });
 
+
   describe('POST /rides/<id>/request endpoint TESTS', () => {
-    const request = {
-      passenger: 'Annabel',
-    };
     it('Post to /rides/<id>/request should return with a status code of 200', (done) => {
       chai.request(app)
         .post('/api/v1/rides/1/request')
-        .send(request)
         .end((error, response) => {
           response.status.should.equal(200);
           done();
@@ -167,7 +271,6 @@ describe('Test for Ride My Way Api endpoints', () => {
     it('Post to /rides/<id>/request should return an object', (done) => {
       chai.request(app)
         .post('/api/v1/rides/1/request')
-        .send(request)
         .end((error, response) => {
           response.body.should.be.an('object');
           response.type.should.equal('application/json');
@@ -178,7 +281,6 @@ describe('Test for Ride My Way Api endpoints', () => {
     it('Post to /rides/<id>/request should not return an error', (done) => {
       chai.request(app)
         .post('/api/v1/rides/1/request')
-        .send(request)
         .end((error, response) => {
           should.not.exist(error);
           done();
@@ -187,8 +289,7 @@ describe('Test for Ride My Way Api endpoints', () => {
 
     it('Post to /rides/<id>/request should return with a data object', (done) => {
       chai.request(app)
-        .post('/api/v1/rides/1/request')
-        .send(request)
+        .post('/api/v1/rides/3/request')
         .end((error, response) => {
           response.body.should.have.property('data');
           response.body.data.should.be.an('object');
@@ -197,34 +298,32 @@ describe('Test for Ride My Way Api endpoints', () => {
         });
     });
 
-    it('Post to /rides/<id>/request should have a value for it\'s ride id', (done) => {
-      chai.request(app)
-        .post('/api/v1/rides/1/request')
-        .send(request)
-        .end((error, response) => {
-          response.body.data.should.have.property('ride_id');
-          response.body.data.ride_id.should.be.greaterThan(0);
-          done();
-        });
-    });
 
-    it('Post to /rides/2/request should return 2 as it\'s ride\'s id for the request', (done) => {
+    it('Post to /rides/<id>/request should return an object with `status` property equal to `success` when the ride offer is available or found', (done) => {
       chai.request(app)
         .post('/api/v1/rides/2/request')
-        .send(request)
-        .end((error, response) => {
-          response.body.data.ride_id.should.equal(2);
-          done();
-        });
-    });
-
-    it('Post to /rides/<id>/request serve `status` should be `success`', (done) => {
-      chai.request(app)
-        .post('/api/v1/rides/1/request')
-        .send(request)
         .end((error, response) => {
           response.body.should.have.property('status');
           response.body.status.should.equal('success');
+          done();
+        });
+    });
+
+    it('Post to /rides/<id>/request should return an object with `status` property equal to `failure` when the ride offer in question does not exist or is deleted', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides/56/request')
+        .end((error, response) => {
+          response.body.status.should.equal('failure');
+          done();
+        });
+    });
+
+    it('Post to /rides/<id>/request should return an object with `error` property equal to `Ride Not Found!` when the ride offer in question does not exist or is deleted', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides/56/request')
+        .end((error, response) => {
+          response.body.should.have.property('error');
+          response.body.error.should.equal('Ride Not Found!');
           done();
         });
     });

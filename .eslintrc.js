@@ -8,6 +8,7 @@ module.exports = {
         "func-names": 0,
         "import/no-extraneous-dependencies": 0,
         "no-unused-vars": 0,
-        "no-undef": 0
+        "no-undef": 0,
+        "object-curly-newline":0
     }
 };
