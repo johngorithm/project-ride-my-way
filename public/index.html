@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ride My Way</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/api.css" />
+    
+</head>
+<body>
+    
+    <nav class="navigation">
+        <div class="navbar wrapper">
+            <p class="navbar-toggle small">MENU</p>
+            <ul class="nav-items nav-left">
+                <li class="nav-item"> <a href="/">RMW</a> </li>
+            </ul>
+            <ul class="nav-items nav-right">
+                <li class="nav-item"> <a href="/">DOCS</a> </li>
+                <li class="nav-item"> <a href="/">API REFERENCE</a> </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dropdown content">
+        <div class="wrapper">
+            <h2 class="welcome-title">Welcome</h2>
+            <p class="welcome-message">This is RIDE MY WAY API. This version one of the api covers the following end-points</p>
+            
+            <br><br>
+
+            <div class="container">
+                <div class="square">
+                    <h4>GET: <span>/api/v1/rides</span></h4>
+                    <p>returns all available ride offers</p>
+                </div>
+                <br>
+
+                <div class="square">
+                    <h4>GET: <span>/api/v1/rides/:ride_id</span></h4>
+                    <p>returns a ride offer with :ride_id</p>
+                </div>
+                <br>
+
+                <div class="square">
+                    <h4>POST: <span>/api/v1/rides</span></h4>
+                    <p>creates a new ride offer</p>
+                </div>
+                <br>
+
+                <div class="square">
+                    <h4>POST: <span>/api/v1/rides/:ride_id/request</span></h4>
+                    <p>sends a request to join a ride offer</p>
+                </div>
+            </div>
+
+            <br><br>
+
+            <a href="https://johngorithm.github.io/project-ride-my-way/" target="_blanck"><button class="button button-blue">VIEW FRONT-END</button></a>
+
+
+        </div>
+    </main>
+
+
+
+    <script src="./js/jquery.min.js"></script>  
+    <script src="./js/main.js"></script>
+</body>
+</html>
