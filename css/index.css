@@ -4,7 +4,6 @@ main {
   background-size: cover;
   background-repeat: no-repeat;
   height: 100%;
-  border: 2px solid red;
 }
 
 main.content .wrapper {
@@ -24,6 +23,7 @@ main.content .wrapper p {
 main.content .wrapper h2{
   color: white;
   font-size: 25px;
+  font-family: 'Montserrat Alternates', sans-serif;
 }
 main.content .overlay {
   background: rgba(0, 0, 0, 0.7);
@@ -36,4 +36,6 @@ main.content .overlay {
 
 main.content .wrapper a .button {
   padding: 10px 25px;
+  font-weight: bold;
+
 }

@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Bad+Script|Cookie|Great+Vibes|Julius+Sans+One|Montserrat+Alternates|Overlock|Spinnaker');
+
+
 p, ul, li, div, a {
     margin: 0;
     padding: 0;
@@ -8,7 +11,7 @@ html, body {
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Overlock', cursive;
     overflow-x: hidden;
 }
 p {
@@ -184,7 +187,7 @@ p {
     color: rgb(116, 163, 22);
 }
 .tile .tile-heading h4 {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Julius Sans One', sans-serif;
     font-size: 18px;
     color: black;
     margin: 40px 0;
@@ -359,8 +362,10 @@ nav ul > li > a {
 .nav-left {
     float: left;
     font-size: 100%;
+    font-family: 'Montserrat Alternates', sans-serif;
 }
 .nav-right {
+    font-family: 'Montserrat Alternates', sans-serif;
     float: right;
     font-size: 80%;
     text-transform: uppercase;
@@ -427,8 +432,10 @@ p.welcome-message {
     padding: 8px 20px;
     border: 1px solid transparent; 
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     border-radius: 25px;
+    font-weight: bold;
+    font-family: 'Montserrat Alternates', sans-serif;
 }
 button:visited {
     border: 1px solid transparent;     
