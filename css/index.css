@@ -22,9 +22,11 @@ main.content .wrapper p {
 
 main.content .wrapper h2{
   color: white;
-  font-size: 25px;
-  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 50px;
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 30px;
 }
+
 main.content .overlay {
   background: rgba(0, 0, 0, 0.7);
   position: absolute;
@@ -35,7 +37,7 @@ main.content .overlay {
 }
 
 main.content .wrapper a .button {
-  padding: 10px 25px;
+  padding: 10px 40px;
   font-weight: bold;
 
 }

@@ -1,7 +1,7 @@
 header {
     background-image: linear-gradient(180deg, dodgerblue 40%, rgb(102, 171, 240) 80%, rgb(0, 217, 255) 100%);
-    height: 400px;
-    padding-top: 88px;
+    height: 450px;
+    padding-top: 65px;
     text-align: center;
 }
 
@@ -18,24 +18,28 @@ header #user-info p span.bullet {
 }
 
 header #user-info img {
-    height: 90px;
-    width: 90px;
+    height: 190px;
+    width: 190px;
     border-radius: 50%;
     border: 3px solid white;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 section#ride-details {
-    padding: 50px 0;
+    padding: 30px 0;
     background: 0;
 }
 
 section#ride-details .square {
-    border-radius: 3px;
+    border-radius: 5px;
+    padding-top: 35px;
 }
-
+section#ride-details .square p {
+    font-weight: bold;
+    color: rgba(0,0,0,0.8);
+}
 section.hori-display {
-    padding: 50px 0;
+    padding: 30px 0;
 }
 
 section.hori-display .container {
@@ -49,4 +53,8 @@ section.hori-display .container .item {
     display: inline-block;
     margin-right: 15px;
     width: 230px ;
+}
+section.hori-display h5 {
+    color: rgba(0,0,0,0.8);
+    font-weight: bold;
 }
