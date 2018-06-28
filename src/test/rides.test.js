@@ -329,4 +329,3 @@ describe('Test for Ride My Way Api endpoints', () => {
     });
   });
 });
-
