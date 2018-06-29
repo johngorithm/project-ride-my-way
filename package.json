@@ -11,7 +11,8 @@
     "start": "node ./build/app.js",
     "go": "npm run build && npm start",
     "test": "nyc --reporter=html --reporter=text mocha ./build/test/*.test.js --exit --timeout=20000",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "migrate": "node ./build/models/databaseMigrations"
   },
   "author": "",
   "license": "ISC",
