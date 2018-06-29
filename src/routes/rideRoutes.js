@@ -1,5 +1,6 @@
 import express from 'express';
 import { Rides, Users } from '../models/data';
+import pool from '../config/databaseConfig';
 
 const rideRoutes = express.Router();
 
