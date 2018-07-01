@@ -5,21 +5,66 @@ import pool from '../config/databaseConfig';
 const rideRoutes = express.Router();
 
 rideRoutes.get('/', (req, res) => {
-  res.json(Rides);
+  const query = 'SELECT * FROM rides';
+  pool.query(query, (error, returnedRides) => {
+    if (error) {
+      res.status(500).json({
+        message: 'Something went wrong, Ride cannot be fetched',
+        status: false,
+        error: 'Unable to fetch ride data',
+      });
+    } else if (returnedRides.rows[0]) {
+      res.status(200).json({
+        message: 'All rides retrieved successfully',
+        status: true,
+        rides: returnedRides.rows,
+      });
+    } else {
+      res.status(404).json({
+        message: 'The database has no ride offer stored',
+        status: false,
+        error: 'Rides Not Found!',
+      });
+    }
+  });
 });
 
+
 rideRoutes.get('/:rideId', (req, res) => {
-  const id = req.params.rideId;
-  if (!Object.prototype.hasOwnProperty.call(Rides, id)) {
-    res.status(404).json({
-      message: 'This ride offer does not exist or may have been deleted',
-      status: 'failure',
-      data: {},
-      error: 'Ride Not Found!',
+  const { rideId } = req.params;
+  if (isNaN(Number(rideId))) {
+    res.status(400).json({
+      message: 'The identity of the ride entered is not valid',
+      status: false,
+      error: 'Invalid ride identity',
     });
+    return;
   }
-  res.json(Rides[id]);
+
+  const query = 'SELECT * FROM rides WHERE ride_id = $1';
+  pool.query(query, [rideId], (error, requestedRide) => {
+    if (error) {
+      res.status(500).json({
+        message: 'Something went wrong, Ride cannot be fetched',
+        status: false,
+        error: 'Unable to fetch ride data',
+      });
+    } else if (requestedRide.rows[0]) {
+      res.status(200).json({
+        message: 'Ride data retrieval was successful',
+        status: true,
+        ride: requestedRide.rows[0],
+      });
+    } else {
+      res.status(404).json({
+        message: 'This ride offer does not exist or may have been deleted',
+        status: false,
+        error: 'Ride Not Found!',
+      });
+    }
+  });
 });
+
 
 rideRoutes.post('/', (req, res) => {
   const fieldErrors = {};
@@ -28,95 +73,92 @@ rideRoutes.post('/', (req, res) => {
     destination,
     date,
     time,
+    takeOffVenue,
   } = newRide;
-
   let willSave = true;
 
-  if (typeof destination === 'string') {
-    if (destination.trim() === '') {
-      fieldErrors.destination = 'destination is required';
+  const validateRide = (fieldData, fieldName) => {
+    if (typeof fieldData === 'string') {
+      if (fieldData.trim() === '') {
+        fieldErrors[fieldName] = `${fieldName} is required`;
+        willSave = false;
+      }
+    } else if (fieldData === undefined) {
+      fieldErrors[fieldName] = `${fieldName} is required`;
       willSave = false;
     }
-  } else if (destination === undefined) {
-    fieldErrors.destination = 'destination is required';
-    willSave = false;
-  }
+  };
 
-  if (typeof date === 'string') {
-    if (date.trim() === '') {
-      fieldErrors.date = 'date is required';
-      willSave = false;
-    }
-  } else if (date === undefined) {
-    fieldErrors.date = 'date is required';
-    willSave = false;
-  }
-
-  if (typeof time === 'string') {
-    if (time.trim() === '') {
-      fieldErrors.time = 'time is required';
-      willSave = false;
-    }
-  } else if (time === undefined) {
-    fieldErrors.time = 'time is required';
-    willSave = false;
-  }
+  validateRide(destination, 'destination');
+  validateRide(time, 'time');
+  validateRide(date, 'date');
+  validateRide(takeOffVenue, 'takeOffVenue');
 
 
   if (willSave === true) {
-    const creator = {
-      username: 'req.user.username',
-      displayName: 'req.user.displayName',
-    };
-
-    newRide.creator = creator;
-    newRide.requests = [];
-
-    const rideKeys = Object.keys(Rides);
-    const maxKey = Math.max(...rideKeys);
-
-
-    Rides[maxKey + 1] = newRide;
-    res.json({ message: `You ride to ${newRide.destination} was successfully created`, status: 'success', data: newRide });
+    // ID of authenticated user posting this ride
+    const creatorId = 1;
+    pool.query('INSERT INTO rides (destination, time, date, take_of_venue, creator_id) VALUES ($1, $2, $3, $4, $5) RETURNING *', [destination, time, date, takeOffVenue, creatorId], (rideError, createdRide) => {
+      if (rideError) {
+        res.status(500).json({
+          message: 'Something went wrong, Ride could not be saved!',
+          status: 'failure',
+          ride: newRide,
+          errors: rideError.message,
+        });
+      } else if (createdRide.rows[0]) {
+        res.status(200).json({
+          message: `You ride to ${createdRide.rows[0].destination} was successfully created`,
+          status: true,
+          ride: createdRide.rows[0],
+        });
+      }
+    });
   } else {
-    res.status(404).json({
-      message: 'Required field(s) is/are missing', status: 'failure', data: newRide, errors: fieldErrors,
+    res.status(400).json({
+      message: 'Required field(s) is/are missing',
+      status: 'failure',
+      data: newRide,
+      errors: fieldErrors,
     });
   }
 });
 
-rideRoutes.post('/:ride_id/request', (req, res) => {
-  const rideId = req.params.ride_id;
-  if (Object.prototype.hasOwnProperty.call(Rides, rideId)) {
-    const newRequest = {
-      passenger: {
-        username: 'femoo',
-        displayName: 'Femi',
-      },
-      status: 'pending',
-      requestDate: Date.now(),
-    };
-
-    const creator = Rides[rideId].creator.username;
-    if (Users[creator].friends.includes(newRequest.passenger.username)) {
-      newRequest.isMyFriend = true;
-    } else {
-      newRequest.isMyFriend = false;
-    }
-
-    const availableRequestKeys = [];
-    Rides[rideId].requests.forEach((request) => {
-      availableRequestKeys.push(request.id);
+rideRoutes.post('/:rideId/requests', (req, res) => {
+  
+  const { rideId } = req.params;
+  if (isNaN(Number(rideId))) {
+    res.status(400).json({
+      message: 'The identity of the ride you want to join is not valid',
+      status: false,
+      error: 'Invalid ride identity',
     });
-    const maxRequestKey = Math.max(...availableRequestKeys);
-    newRequest.id = maxRequestKey + 1;
-    Rides[rideId].requests.push(newRequest);
-    res.json({ message: 'Your request has been successfully received, You will be notified if Accepted!', status: 'success', data: newRequest });
-  } else {
-    res.status(404).json({
-      message: 'The ride you are requesting does not exist or may have been deleted', status: 'failure', data: {}, error: 'Ride Not Found!',
-    });
+    return;
   }
+
+  const userId = 4;
+  const rideDestination = 'Lekki';
+  const sender = 'Dera';
+  // FETCH SENDER FROM req.user.firstname
+  // GRAB SENDER ID FROM req.user.id
+  // FETCH RIDE DESTINATION req.params.destination
+  const query = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING *';
+  const queryValues = [sender, userId, rideId, 'pending'];
+  pool.query(query, queryValues, (error, newRequest) => {
+    if (error) {
+      res.status(500).json({
+        message: 'Something went wrong, Ride cannot be fetched',
+        status: false,
+        error: 'Unable to fetch ride data',
+      });
+    } else if (newRequest.rows[0]) {
+      res.status(200).json({
+        message: `You request to join a ride to ${rideDestination} was successfully received, you will be notified when it has been accepted`,
+        status: true,
+        request: newRequest.rows[0],
+      });
+    }
+  });
 });
 
 export default rideRoutes;
