@@ -9,6 +9,7 @@
   "scripts": {
     "build": "babel src -d build",
     "start": "node ./build/app.js",
+    "start:dev": "nodemon --exec babel-node src/app.js",
     "go": "npm run build && npm start",
     "test": "nyc --reporter=html --reporter=text mocha ./build/test/*.test.js --exit --timeout=20000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
