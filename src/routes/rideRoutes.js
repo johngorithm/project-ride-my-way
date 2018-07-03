@@ -76,24 +76,29 @@ rideRoutes.post('/:rideId/requests', (req, res) => {
     return;
   }
 
-  const userId = 4;
-  const rideDestination = 'Lekki';
-  const sender = 'Dera';
-  // FETCH SENDER FROM req.user.firstname
-  // GRAB SENDER ID FROM req.user.id
+  const userId = req.decode.user_id;
+  const sender = req.decode.firstname;
   // FETCH RIDE DESTINATION req.params.destination
   const query = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING *';
   const queryValues = [sender, userId, rideId, 'pending'];
   pool.query(query, queryValues, (error, newRequest) => {
     if (error) {
+      if (error.code == '23503') {
+        res.status(404).json({
+          message: 'You are requesting to join a ride that does not exist',
+          status: false,
+          error: error.message,
+        });
+        return;
+      }
       res.status(500).json({
         message: 'Something went wrong, Ride cannot be fetched',
         status: false,
-        error: 'Unable to fetch ride data',
+        error: error.message,
       });
     } else if (newRequest.rows[0]) {
       res.status(200).json({
-        message: `You request to join a ride to ${rideDestination} was successfully received, you will be notified when it has been accepted`,
+        message: 'Your request was successfully received, keep an eye on your notification to know the status of your request',
         status: true,
         request: newRequest.rows[0],
       });

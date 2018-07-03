@@ -1,9 +1,12 @@
 import express from 'express';
+import config from 'dotenv';
 import rideRoutes from './routes/rideRoutes';
 import indexRoute from './routes/indexRoute';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
+import verifyToken from './middlewares/authMiddleware';
 
+config.config();
 
 const app = express();
 
@@ -16,9 +19,9 @@ app.use(express.static(`${__dirname}/../public`));
 
 
 app.use('/', indexRoute);
-app.use('/api/v1/rides', rideRoutes);
+app.use('/api/v1/rides', verifyToken, rideRoutes);
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/users', verifyToken, userRoutes);
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
