@@ -1,5 +1,4 @@
 import express from 'express';
-import { Rides, Users } from '../models/data';
 import pool from '../config/databaseConfig';
 
 const rideRoutes = express.Router();
@@ -66,66 +65,7 @@ rideRoutes.get('/:rideId', (req, res) => {
 });
 
 
-rideRoutes.post('/', (req, res) => {
-  const fieldErrors = {};
-  const newRide = req.body;
-  const {
-    destination,
-    date,
-    time,
-    takeOffVenue,
-  } = newRide;
-  let willSave = true;
-
-  const validateRide = (fieldData, fieldName) => {
-    if (typeof fieldData === 'string') {
-      if (fieldData.trim() === '') {
-        fieldErrors[fieldName] = `${fieldName} is required`;
-        willSave = false;
-      }
-    } else if (fieldData === undefined) {
-      fieldErrors[fieldName] = `${fieldName} is required`;
-      willSave = false;
-    }
-  };
-
-  validateRide(destination, 'destination');
-  validateRide(time, 'time');
-  validateRide(date, 'date');
-  validateRide(takeOffVenue, 'takeOffVenue');
-
-
-  if (willSave === true) {
-    // ID of authenticated user posting this ride
-    const creatorId = 1;
-    pool.query('INSERT INTO rides (destination, time, date, take_of_venue, creator_id) VALUES ($1, $2, $3, $4, $5) RETURNING *', [destination, time, date, takeOffVenue, creatorId], (rideError, createdRide) => {
-      if (rideError) {
-        res.status(500).json({
-          message: 'Something went wrong, Ride could not be saved!',
-          status: 'failure',
-          ride: newRide,
-          errors: rideError.message,
-        });
-      } else if (createdRide.rows[0]) {
-        res.status(200).json({
-          message: `You ride to ${createdRide.rows[0].destination} was successfully created`,
-          status: true,
-          ride: createdRide.rows[0],
-        });
-      }
-    });
-  } else {
-    res.status(400).json({
-      message: 'Required field(s) is/are missing',
-      status: 'failure',
-      data: newRide,
-      errors: fieldErrors,
-    });
-  }
-});
-
 rideRoutes.post('/:rideId/requests', (req, res) => {
-  
   const { rideId } = req.params;
   if (isNaN(Number(rideId))) {
     res.status(400).json({
