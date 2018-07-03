@@ -97,7 +97,7 @@ userRouter.get('/rides/:rideId/requests', (req, res) => {
 userRouter.put('/rides/:rideId/requests/:requestId', (req, res) => {
   const { rideId, requestId } = req.params;
   const { action } = req.query;
-  console.log(action);
+
 
   if ((!action === 'accept') || (!action === 'reject')) {
     res.status(400).json({
