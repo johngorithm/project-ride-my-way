@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../config/databaseConfig';
 
+
 const userRouter = express.Router();
 
 userRouter.post('/rides', (req, res) => {
@@ -76,13 +77,13 @@ userRouter.get('/rides/:rideId/requests', (req, res) => {
       res.status(500).json({
         message: 'Something went wrong, Ride cannot be fetched',
         status: false,
-        error: 'Unable to fetch ride data',
+        error: error.message,
       });
     } else if (requests.rows[0]) {
       res.status(200).json({
         message: 'Requests data retrieval was successful',
         status: true,
-        ride: requests.rows,
+        requests: requests.rows,
       });
     } else {
       res.status(404).json({

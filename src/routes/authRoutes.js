@@ -1,6 +1,8 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import pool from '../config/databaseConfig';
+
 
 const authRouter = express.Router();
 
@@ -50,10 +52,16 @@ authRouter.post('/signup', (req, res) => {
           error: error.message,
         });
       } else if (addedUser.rows[0]) {
-        res.status(200).json({
-          message: `Welcome ${addedUser.rows[0].firstname}, your account was successfully created`,
+        const payload = {
+          user_id: addedUser.rows[0].user_id,
+          username: addedUser.rows[0].username,
+          firstname: addedUser.rows[0].firstname,
+        };
+        const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '10 h' });
+        res.append('x-access-token', token).status(200).json({
+          message: `Welcome ${payload.firstname}, your account was successfully created`,
           status: true,
-          user: addedUser.rows[0],
+          user: payload,
         });
       }
     });
@@ -98,13 +106,19 @@ authRouter.post('/login', (req, res) => {
         });
       } else if (user.rows[0]) {
         if (bcrypt.compareSync(password, user.rows[0].password)) {
-          res.status(200).json({
+          const payload = {
+            user_id: user.rows[0].user_id,
+            username: user.rows[0].username,
+            firstname: user.rows[0].firstname,
+          };
+          const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '10 h' });
+          res.append('x-access-token', token).status(200).json({
             message: `Welcome ${user.rows[0].firstname}, you are successfully logged in`,
             status: true,
             user: user.rows[0],
           });
         } else {
-          res.status(200).json({
+          res.status(400).json({
             message: `${user.rows[0].firstname}, your password is incorrect, please check and try again`,
             status: false,
             user: req.body,
