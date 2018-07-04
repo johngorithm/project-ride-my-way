@@ -15,17 +15,14 @@ if (process.env.NODE_ENV === 'development') {
   };
 } else if (process.env.NODE_ENV === 'test') {
   dbConfig = {
-    user: 'postgres',
-    host: 'localhost',
-    database: 'ridemyway_test',
+    user: 'johngorithm',
+    database: 'postgres',
     password: 'neme7jo@',
     port: 5432,
   };
 } else if (process.env.NODE_ENV === 'production') {
   dbConfig = { connectionString: process.env.DATABASE_URL };
 }
-
-console.log(process.env.NODE_ENV);
 
 const pool = new Pool(dbConfig);
 

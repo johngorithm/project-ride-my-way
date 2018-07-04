@@ -11,7 +11,8 @@
     "start": "node ./build/app.js",
     "start:dev": "nodemon --exec babel-node src/app.js",
     "go": "npm run build && npm start",
-    "test": "nyc --reporter=html --reporter=text mocha ./build/test/*.test.js --exit --timeout=20000",
+    "test": "nyc --reporter=html --reporter=text mocha ./build/test/*.test.js  --exit --timeout=20000",
+    "test:dev": "nyc --reporter=html --reporter=text mocha ./src/test/*.test.js  --compilers js:babel-core/register --exit --timeout=20000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate": "node ./build/models/databaseMigrations"
   },
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
