@@ -1,12 +1,12 @@
 import express from 'express';
-import config from 'dotenv';
+import dotenv from 'dotenv';
 import rideRoutes from './routes/rideRoutes';
 import indexRoute from './routes/indexRoute';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import verifyToken from './middlewares/authMiddleware';
 
-config.config();
+dotenv.config();
 
 const app = express();
 

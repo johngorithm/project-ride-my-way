@@ -58,10 +58,11 @@ authRouter.post('/signup', (req, res) => {
           firstname: addedUser.rows[0].firstname,
         };
         const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '10 h' });
-        res.append('x-access-token', token).status(200).json({
+        res.status(200).json({
           message: `Welcome ${payload.firstname}, your account was successfully created`,
           status: true,
           user: payload,
+          token,
         });
       }
     });
@@ -111,11 +112,12 @@ authRouter.post('/login', (req, res) => {
             username: user.rows[0].username,
             firstname: user.rows[0].firstname,
           };
-          const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '10 h' });
-          res.append('x-access-token', token).status(200).json({
+          const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' });
+          res.status(200).json({
             message: `Welcome ${user.rows[0].firstname}, you are successfully logged in`,
             status: true,
             user: user.rows[0],
+            token,
           });
         } else {
           res.status(400).json({

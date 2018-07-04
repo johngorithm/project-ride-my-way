@@ -2,14 +2,20 @@ language: node_js
 node_js:
   - "stable"
 
+services:
+  - postgresql
+
 cache:
   directories:
     - "node_modules"
 
 before_script:
   - "npm run build"
+  - psql -c 'CREATE DATABASE travis_ci_test;' -U postgres
 
 scripts:
   - "npm test"
 
 after_success: "npm run coverage"
+
+ 
