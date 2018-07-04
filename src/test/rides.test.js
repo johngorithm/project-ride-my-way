@@ -4,20 +4,11 @@ import chai, { expect, should } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
 
-
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJ1c2VybmFtZSI6ImhlbnJ5IiwiZmlyc3RuYW1lIjoiQ2hpdG8iLCJpYXQiOjE1MzA3MTM2MTUsImV4cCI6MTUzMDgwMDAxNX0.TQOCTpm8pt4E5HYFCdQCcaeS1lomu0KUfZ9aMtKSY-A';
 chai.use(chaiHttp);
 should();
 
 describe('TESTS FOR RIDE MY WAY API ENDPOINTS', () => {
-  let token = '';
-  before('Get a valid token', () => {
-    chai.request(app)
-      .post('/api/v1/auth/login')
-      .send({ username: 'henry', password: 'henry' })
-      .end((error, response) => {
-        token = response.body.token;
-      });
-  });
   describe('Test: 404 Not Found', () => {
     it('should return a status Code of 404 for unknown route', (done) => {
       chai.request(app).get('/unknown').end((error, response) => {

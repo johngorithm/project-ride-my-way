@@ -4,14 +4,17 @@ node_js:
 
 services:
   - postgresql
-
+  
 cache:
   directories:
     - "node_modules"
 
 before_script:
   - "npm run build"
+  - "npm run migrate"
+  - psql -c 'DROP DATABASE IF EXISTS travis_ci_test;' -U postgres
   - psql -c 'CREATE DATABASE travis_ci_test;' -U postgres
+  - psql -c "CREATE USER johngorithm WITH PASSWORD 'neme7jo@';" -U postgres
 
 scripts:
   - "npm test"
