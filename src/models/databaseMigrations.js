@@ -1,4 +1,5 @@
 import pool from '../config/databaseConfig';
+import PopulateDB from '../helpers/seedData';
 
 
 const userTableQuery = `CREATE TABLE IF NOT EXISTS users(
@@ -7,10 +8,8 @@ const userTableQuery = `CREATE TABLE IF NOT EXISTS users(
   lastname VARCHAR (50),
   username VARCHAR (50) UNIQUE NOT NULL,
   image_url VARCHAR,
-  phone VARCHAR (20) UNIQUE NOT NULL,
   email VARCHAR (355) UNIQUE NOT NULL,
   password VARCHAR (400) NOT NULL,
-  notifications JSON,
   created_on TIMESTAMP DEFAULT Now(),
   last_updated TIMESTAMP,
   last_login TIMESTAMP
@@ -24,8 +23,7 @@ const rideTableQuery = `CREATE TABLE IF NOT EXISTS rides (
   take_of_venue VARCHAR (200),
   creator VARCHAR (20),
   creator_id INTEGER REFERENCES users (user_id),
-  created_on TIMESTAMP DEFAULT Now(),
-  requests JSON
+  created_on TIMESTAMP DEFAULT Now()
 )`;
 
 const requestTableQuery = `CREATE TABLE IF NOT EXISTS requests (
@@ -37,21 +35,41 @@ const requestTableQuery = `CREATE TABLE IF NOT EXISTS requests (
   sender VARCHAR(20) NOT NULL
 )`;
 
-pool.query(userTableQuery, (error, response) => {
-  if (error) {
-    console.error(error.stack);
+pool.query('DROP TABLE IF EXISTS users CASCADE', (userTableDelError, res) => {
+  if (userTableDelError) {
+    console.log(userTableDelError.message);
   }
-  console.log(response);
-  pool.query(rideTableQuery, (error, res) => {
-    if (error) {
-      console.error(error.stack);
+  pool.query('DROP TABLE IF EXISTS rides CASCADE', (rideTableDelError, rideResponse) => {
+    if (rideTableDelError) {
+      console.log(rideTableDelError.message);
     }
-    console.log(res);
-    pool.query(requestTableQuery, (error, result) => {
-      if (error) {
-        console.error(error.stack);
+
+    pool.query('DROP TABLE IF EXISTS requests CASCADE', (requestTableDelError, reqResponse) => {
+      if (requestTableDelError) {
+        console.log(requestTableDelError.message);
       }
-      console.log(result);
+      console.log('done deleting');
+      pool.query(userTableQuery, (error, response) => {
+        if (error) {
+          console.error(error.message);
+        }
+        PopulateDB.addUsers();
+        console.log('next');
+        pool.query(rideTableQuery, (error, res) => {
+          if (error) {
+            console.error(error.message);
+          }
+          PopulateDB.addRides();
+          console.log('next');
+          pool.query(requestTableQuery, (error, result) => {
+            if (error) {
+              console.error(error.message);
+            }
+            PopulateDB.addRequests();
+            console.log('done');
+          });
+        });
+      });
     });
   });
 });
