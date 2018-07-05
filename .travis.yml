@@ -16,9 +16,35 @@ before_script:
   - psql -c 'DROP DATABASE IF EXISTS travis_ci_test;' -U postgres
   - psql -c 'CREATE DATABASE travis_ci_test;' -U postgres
   - psql -c "CREATE USER johngorithm WITH PASSWORD 'neme7jo@';" -U postgres
-  - "npm run migrate"  
+  - psql -c "CREATE TABLE IF NOT EXISTS users(user_id serial PRIMARY KEY,firstname VARCHAR (50) NOT NULL,lastname VARCHAR (50),username VARCHAR (50) UNIQUE NOT NULL,image_url VARCHAR,email VARCHAR (355) UNIQUE NOT NULL,password VARCHAR (400) NOT NULL,created_on TIMESTAMP DEFAULT Now(),last_updated TIMESTAMP,last_login TIMESTAMP);" - U postgres
+  - psql -c "CREATE TABLE IF NOT EXISTS rides (ride_id serial PRIMARY KEY,destination VARCHAR (100) NOT NULL,time TIME,date DATE,take_of_venue VARCHAR (200),creator VARCHAR (20),creator_id INTEGER REFERENCES users (user_id),created_on TIMESTAMP DEFAULT Now() );"
+  - psql -c "CREATE TABLE IF NOT EXISTS requests (request_id serial PRIMARY KEY,sender_id INTEGER REFERENCES users (user_id),ride_id INTEGER REFERENCES rides (ride_id),created_on TIMESTAMP DEFAULT Now(),status VARCHAR(10),sender VARCHAR(20) NOT NULL);"
+  
+  - psql -c "INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( 'John', 'Obi', 'johngorithm', 'jo@me.com', 'neme');"
+  - psql -c "INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ('Dera', 'Obi', 'deraviv', 'dera@me.com', 'neme');"
+  - psql -c "INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( 'Foo', 'Bar', 'bar', 'bar@me.com', 'neme');"
+  - psql -c "INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( 'Peace', 'Nwachukwu', 'peace', 'peace@me.com', 'neme');"
+  - psql -c "INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( 'Hetro', 'Mo', 'mo', 'jet@me.com', 'neme');"
+  - psql -c "INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ('Love', 'Ana', 'love', 'love@me.com', 'neme');"
+  - psql -c "INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( 'Keneth', 'Gbenga', 'ken', 'ken@me.com', 'neme');"
+  - psql -c "INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ('Henry', 'Obi', 'henry', 'nkams@me.com', 'neme');"
+
+  
+  - psql -c "INSERT INTO rides (destination, time, date, take_of_venue,creator, creator_id) VALUES ('Ikeja', '12:45 PM', '3/12/2018', 'Epic Tower', 'John', 1);"
+  - psql -c "INSERT INTO rides (destination, time, date, take_of_venue,creator, creator_id) VALUES ('Lekki', '03:00 PM', '8/12/2018', 'Anthony bus terminal', 'Foo', 3);"
+  - psql -c "INSERT INTO rides (destination, time, date, take_of_venue,creator, creator_id) VALUES ('Oja', '05:00 PM', '8/8/2018', 'Iyana Ipaja bus stop', 'Dera', 2);"
+  - psql -c "INSERT INTO rides (destination, time, date, take_of_venue,creator, creator_id) VALUES ('Ikotun', '06:00 AM', '2/8/2018', 'Ikeja Along', 'Foo', 3);"
+  - psql -c "INSERT INTO rides (destination, time, date, take_of_venue,creator, creator_id) VALUES ('Sango', '04:00 AM', '2/8/2018', 'Ipaja bus stop', 'John', 1);"
+
+  - psql -c "INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ('John', 1, 1, 'pending');" -U postgres
+  - psql -c "INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ('Dera', 2, 1, 'pending');" -U postgres
+  - psql -c "INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ('Keneth', 3, 2, 'pending');" -U postgres
+  - psql -c "INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ('Henry', 1, 3, 'pending');" -U postgres
+  - psql -c "INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ('Foo', 1, 2, 'pending');" -U postgres
+  - psql -c "INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ('Peace', 4, 3, 'pending');" -U postgres
+  
 scripts:
-  - "npm run test:dev"
+  - "npm test"
 
 after_success: "npm run coverage"
 

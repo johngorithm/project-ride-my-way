@@ -3,11 +3,12 @@
 import chai, { expect, should } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
+import token from '../helpers/generateToken';
 
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJ1c2VybmFtZSI6ImhlbnJ5IiwiZmlyc3RuYW1lIjoiQ2hpdG8iLCJpYXQiOjE1MzA3MTM2MTUsImV4cCI6MTUzMDgwMDAxNX0.TQOCTpm8pt4E5HYFCdQCcaeS1lomu0KUfZ9aMtKSY-A';
 chai.use(chaiHttp);
 should();
+
 
 describe('TESTS FOR RIDE MY WAY API ENDPOINTS', () => {
   describe('Test: 404 Not Found', () => {
@@ -23,6 +24,7 @@ describe('TESTS FOR RIDE MY WAY API ENDPOINTS', () => {
     it('should response successfully under good network conditions', (done) => {
       chai.request(app).get('/').end((error, response) => {
         expect(response).to.have.status(200);
+        response.type.should.equal('text/html');
         done();
       });
     });

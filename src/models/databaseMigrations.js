@@ -35,6 +35,7 @@ const requestTableQuery = `CREATE TABLE IF NOT EXISTS requests (
   sender VARCHAR(20) NOT NULL
 )`;
 
+
 pool.query('DROP TABLE IF EXISTS users CASCADE', (userTableDelError, res) => {
   if (userTableDelError) {
     console.log(userTableDelError.message);

@@ -28,10 +28,10 @@ const rides = [
 const requests = [
   ['John', 1, 1, 'pending'],
   ['Dera', 2, 1, 'pending'],
-  ['Keneth', 7, 2, 'pending'],
-  ['Henry', 8, 3, 'pending'],
-  ['Foo', 3, 4, 'pending'],
-  ['Peace', 4, 5, 'pending'],
+  ['Keneth', 3, 2, 'pending'],
+  ['Henry', 1, 3, 'pending'],
+  ['Foo', 1, 2, 'pending'],
+  ['Peace', 4, 3, 'pending'],
 ];
 
 

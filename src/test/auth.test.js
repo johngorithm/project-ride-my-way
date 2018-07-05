@@ -1,4 +1,4 @@
-/* globals describe, it, after, console  */
+/* globals describe, it, before, console  */
 
 import chai, { expect, should } from 'chai';
 import chaiHttp from 'chai-http';
@@ -146,8 +146,4 @@ describe('TESTS FOR RIDE MY WAY API AUTH ENDPOINTS', () => {
         });
     });
   });
-});
-
-after(() => {
-  console.log(authToken);
 });
