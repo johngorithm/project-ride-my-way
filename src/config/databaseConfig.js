@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'development') {
     port: 5432,
   };
 } else if (process.env.NODE_ENV === 'dev-test') {
-  console.log('dev:test');
+  console.log('dev-test');
   dbConfig = {
     user: 'postgres',
     database: 'ridemyway_test',

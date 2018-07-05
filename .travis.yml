@@ -3,7 +3,6 @@ node_js:
   - "stable"
 env:
   - NODE_ENV=test
-  - SH=Bash
 
 services:
   - postgresql

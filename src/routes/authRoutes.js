@@ -11,7 +11,6 @@ authRouter.post('/signup', (req, res) => {
     username,
     firstname,
     lastname,
-    phone,
     email,
     password,
   } = req.body;
@@ -34,14 +33,13 @@ authRouter.post('/signup', (req, res) => {
   validateUser(firstname, 'firstname');
   validateUser(lastname, 'lastname');
   validateUser(username, 'username');
-  validateUser(phone, 'phone');
   validateUser(email, 'email');
   validateUser(password, 'password');
 
   if (willSave) {
     const hashedPassword = bcrypt.hashSync(password, 10);
-    const query = 'INSERT INTO users ( firstname, lastname, username, phone, email, password ) VALUES ( $1, $2, $3, $4, $5, $6 ) RETURNING firstname, username, phone';
-    const values = [firstname, lastname, username, phone, email, hashedPassword];
+    const query = 'INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( $1, $2, $3, $4, $5 ) RETURNING firstname, username';
+    const values = [firstname, lastname, username, email, hashedPassword];
 
     pool.query(query, values, (error, addedUser) => {
       if (error) {
@@ -113,10 +111,15 @@ authRouter.post('/login', (req, res) => {
             firstname: user.rows[0].firstname,
           };
           const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' });
+          const authenticatedUser = {
+            id: user.rows[0].user_id,
+            username: user.rows[0].username,
+            firstname: user.rows[0].firstname,
+          };
           res.status(200).json({
-            message: `Welcome ${user.rows[0].firstname}, you are successfully logged in`,
+            message: `Welcome ${authenticatedUser.firstname}, you are successfully logged in`,
             status: true,
-            user: user.rows[0],
+            user: authenticatedUser,
             token,
           });
         } else {
