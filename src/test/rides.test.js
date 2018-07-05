@@ -4,7 +4,6 @@ import chai, { expect, should } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
 
-process.env.NODE_ENV = 'dev-test';
 
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJ1c2VybmFtZSI6ImhlbnJ5IiwiZmlyc3RuYW1lIjoiQ2hpdG8iLCJpYXQiOjE1MzA3MTM2MTUsImV4cCI6MTUzMDgwMDAxNX0.TQOCTpm8pt4E5HYFCdQCcaeS1lomu0KUfZ9aMtKSY-A';
 chai.use(chaiHttp);
