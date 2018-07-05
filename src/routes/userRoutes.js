@@ -102,7 +102,7 @@ userRouter.put('/rides/:rideId/requests/:requestId', (req, res) => {
 
 
   if ((!action === 'accept') || (!action === 'reject')) {
-    res.status(400).json({
+    res.status(403).json({
       message: 'There is no valid action to be executed in your query',
       status: false,
       error: 'Invalid update action',
@@ -129,6 +129,12 @@ userRouter.put('/rides/:rideId/requests/:requestId', (req, res) => {
           errors: 'Request Not Found',
         });
       }
+    });
+  } else {
+    res.status(403).json({
+      message: 'Your query action is not specified',
+      status: false,
+      error: 'Invalid update action',
     });
   }
 });
