@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - "stable"
 env:
-  - process.env.NODE_ENV=test
+  - NODE_ENV=test
   - SH=Bash
 
 services:
@@ -17,7 +17,7 @@ before_script:
   - psql -c 'DROP DATABASE IF EXISTS travis_ci_test;' -U postgres
   - psql -c 'CREATE DATABASE travis_ci_test;' -U postgres
   - psql -c "CREATE USER johngorithm WITH PASSWORD 'neme7jo@';" -U postgres
-  - "export NODE_ENV=test && npm run migrate"  
+  - "npm run migrate"  
 scripts:
   - "npm test"
 
