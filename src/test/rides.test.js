@@ -1,4 +1,4 @@
-/* globals describe, it, before  */
+/* globals describe, it  */
 
 import chai, { expect, should } from 'chai';
 import chaiHttp from 'chai-http';

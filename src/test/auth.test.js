@@ -5,7 +5,6 @@ import chaiHttp from 'chai-http';
 import app from '../app';
 
 
-let authToken = null;
 chai.use(chaiHttp);
 should();
 
@@ -31,8 +30,7 @@ describe('TESTS FOR RIDE MY WAY API AUTH ENDPOINTS', () => {
           password: 'neme',
         })
         .end((error, response) => {
-          authToken = response.body.token;
-          expect(response.body).to.have.ownProperty('token');
+          expect(response.body).to.have.property('token');
           expect(response.body.token.length).to.be.greaterThan(1);
           expect(response).to.have.status(200);
           response.body.should.be.a('object');
