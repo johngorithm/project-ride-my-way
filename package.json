@@ -15,6 +15,7 @@
     "test:dev": "nyc --reporter=html --reporter=text mocha ./src/test/*.test.js  --compilers js:babel-core/register --exit --timeout=20000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate": "babel-node ./src/models/databaseMigrations",
+    "migration": "node ./build/models/databaseMigrations",
     "seed": "babel-node ./src/helpers/seedData"
   },
   "author": "",

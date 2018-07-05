@@ -18,7 +18,7 @@ before_script:
   - psql -c "CREATE USER johngorithm WITH PASSWORD 'neme7jo@';" -U postgres
   - "npm run migrate"  
 scripts:
-  - "npm test"
+  - "npm run test:dev"
 
 after_success: "npm run coverage"
 

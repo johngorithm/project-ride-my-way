@@ -74,6 +74,7 @@ authRouter.post('/signup', (req, res) => {
   }
 });
 
+
 authRouter.post('/login', (req, res) => {
   const { username, password } = req.body;
   const fieldErrors = {};

@@ -35,8 +35,9 @@ userRouter.post('/rides', (req, res) => {
 
   if (willSave === true) {
     // ID of authenticated user posting this ride
-    const creatorId = 1;
-    pool.query('INSERT INTO rides (destination, time, date, take_of_venue, creator_id) VALUES ($1, $2, $3, $4, $5) RETURNING *', [destination, time, date, takeOffVenue, creatorId], (rideError, createdRide) => {
+    const creatorId = req.decode.user_id;
+    const creator = req.decode.firstname;
+    pool.query('INSERT INTO rides (destination, time, date, take_of_venue, creator_id, creator) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [destination, time, date, takeOffVenue, creatorId, creator], (rideError, createdRide) => {
       if (rideError) {
         res.status(500).json({
           message: 'Something went wrong, Ride could not be saved!',
