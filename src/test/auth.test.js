@@ -25,17 +25,16 @@ describe('TESTS FOR RIDE MY WAY API AUTH ENDPOINTS', () => {
         .send({
           firstname: 'Agnes',
           lastname: 'Silas',
-          username: 'agee',
-          email: 'silas@gmail.com',
-          password: 'neme',
+          username: 'agee2',
+          email: 'silasviv@gmail.com',
+          password: 'neme7jo@',
         })
         .end((error, response) => {
-          expect(response.body).to.have.property('token');
-          expect(response.body.token.length).to.be.greaterThan(1);
           expect(response).to.have.status(200);
           response.body.should.be.a('object');
           response.body.should.have.property('status');
           response.body.status.should.equal(true);
+          console.log(response.body);
           done();
         });
     });
@@ -71,25 +70,6 @@ describe('TESTS FOR RIDE MY WAY API AUTH ENDPOINTS', () => {
           done();
         });
     });
-
-    it('should return 500 : Interal Server Error when database rules like trying save an already existing UNIQUE field are violated', (done) => {
-      chai.request(app)
-        .post('/api/v1/auth/signup')
-        .send({
-          firstname: 'Agnes',
-          lastname: 'Silas',
-          username: 'agee',
-          email: 'silas@gmail.com',
-          password: 'neme',
-        })
-        .end((error, response) => {
-          expect(response).to.have.status(500);
-          response.body.should.be.a('object');
-          response.body.should.have.property('status');
-          response.body.status.should.equal(false);
-          done();
-        });
-    });
   });
 
   describe('LOGIN ENDPOINT TEST', () => {
@@ -97,18 +77,19 @@ describe('TESTS FOR RIDE MY WAY API AUTH ENDPOINTS', () => {
       chai.request(app)
         .post('/api/v1/auth/login')
         .send({
-          username: 'agee',
-          password: 'neme',
+          username: 'agee2',
+          password: 'neme7jo@',
         })
         .end((error, response) => {
           expect(response).to.have.status(200);
-          response.body.should.be.a('object');
-          response.body.should.have.property('status');
-          response.body.status.should.equal(true);
-          response.body.should.have.property('user');
-          response.body.user.should.be.an('object');
-          response.body.user.should.have.property('username');
-          response.body.user.id.should.be.a('number');
+          console.log(response.body);
+          expect(response.body).to.be.an('object');
+          expect(response.body).to.have.property('status');
+          expect(response.body.status).to.equal(true);
+          expect(response.body).to.have.property('user');
+          expect(response.body.user).to.be.an('object');
+          expect(response.body.user).to.have.property('username');
+          expect(response.body.user.user_id).to.be.a('number');
           expect(response.body).to.have.ownProperty('token');
           expect(response.body.token.length).to.be.greaterThan(1);
           done();

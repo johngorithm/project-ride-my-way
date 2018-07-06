@@ -101,14 +101,8 @@ userRouter.put('/rides/:rideId/requests/:requestId', (req, res) => {
   const { action } = req.query;
 
 
-  if ((!action === 'accept') || (!action === 'reject')) {
-    res.status(403).json({
-      message: 'There is no valid action to be executed in your query',
-      status: false,
-      error: 'Invalid update action',
-    });
-  } else if (action) {
-    pool.query('UPDATE requests SET status = $1 WHERE request_id = $2 AND ride_id = $3 RETURNING *', [`${action}ed`, requestId, rideId], (error, updatedRequest) => {
+  if (action.toLowerCase() === 'accept' || action.toLowerCase() === 'reject') {
+    pool.query('UPDATE requests SET status = $1 WHERE request_id = $2 AND ride_id = $3 RETURNING *', [`${action.toLowerCase()}ed`, requestId, rideId], (error, updatedRequest) => {
       if (error) {
         res.status(500).json({
           message: 'Something went wrong, Request could not be updated!',
@@ -132,7 +126,7 @@ userRouter.put('/rides/:rideId/requests/:requestId', (req, res) => {
     });
   } else {
     res.status(403).json({
-      message: 'Your query action is not specified',
+      message: 'Your action query is invalid or not specified',
       status: false,
       error: 'Invalid update action',
     });

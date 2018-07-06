@@ -23,9 +23,23 @@ authRouter.post('/signup', (req, res) => {
       if (fieldData.trim() === '') {
         fieldErrors[fieldName] = `${fieldName} is required`;
         willSave = false;
+      } else if (fieldData.trim().length > 0) {
+        if (fieldName === 'password' && fieldData.length < 6) {
+          fieldErrors[fieldName] = 'password must not be less than 6 characters';
+          willSave = false;
+        } else if (fieldName === 'email') {
+          const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          if (!re.test(fieldData)) {
+            fieldErrors[fieldName] = 'email address is invalid';
+            willSave = false;
+          }
+        }
       }
     } else if (fieldData === undefined) {
       fieldErrors[fieldName] = `${fieldName} is required`;
+      willSave = false;
+    } else {
+      fieldErrors[fieldName] = `${fieldName} contains invalid data`;
       willSave = false;
     }
   };
@@ -37,30 +51,56 @@ authRouter.post('/signup', (req, res) => {
   validateUser(password, 'password');
 
   if (willSave) {
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    const query = 'INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( $1, $2, $3, $4, $5 ) RETURNING firstname, username';
+    const hashedPassword = bcrypt.hashSync(password.toString(), 10);
+    const query = 'INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( $1, $2, $3, $4, $5 ) RETURNING firstname, username, user_id';
     const values = [firstname, lastname, username, email, hashedPassword];
 
     pool.query(query, values, (error, addedUser) => {
       if (error) {
-        res.status(500).json({
-          message: 'Something went wrong, Ride could not be saved!',
-          status: false,
-          user: req.body,
-          error: error.message,
-        });
+        if (error.code === '23505') {
+          res.status(500).json({
+            message: 'This user already exist in our database, Please login instead',
+            status: false,
+            user: req.body,
+            error: error.message,
+          });
+        } else if (error.code === '22001') {
+          res.status(500).json({
+            message: 'Ooops!, You just exceeded the maximum number of characters allowed for this field.',
+            status: false,
+            user: req.body,
+            error: error.message,
+          });
+        } else {
+          res.status(500).json({
+            message: 'Ooops!, Something went wrong, user could not be saved.',
+            status: false,
+            user: req.body,
+            error: error.message,
+          });
+        }
       } else if (addedUser.rows[0]) {
         const payload = {
-          user_id: addedUser.rows[0].user_id,
           username: addedUser.rows[0].username,
           firstname: addedUser.rows[0].firstname,
+          user_id: addedUser.rows[0].user_id,
         };
-        const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '10 h' });
-        res.status(200).json({
-          message: `Welcome ${payload.firstname}, your account was successfully created`,
-          status: true,
-          user: payload,
-          token,
+
+        jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' }, (tokenError, userToken) => {
+          if (tokenError) {
+            res.status(500).json({
+              message: 'Sorry we are unable to generate a token, please try again or login with your credentials',
+              status: false,
+              error: 'Unable To Generate Token',
+            });
+            return;
+          }
+          res.status(200).json({
+            message: `Welcome ${payload.firstname}, your account was successfully created`,
+            status: true,
+            user: payload,
+            userToken,
+          });
         });
       }
     });
