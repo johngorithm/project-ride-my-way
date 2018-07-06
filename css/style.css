@@ -188,19 +188,23 @@ p {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     height: 130px;
-    background: rgba(30, 143, 255, 0.29);
+    background: rgba(46, 202, 237, 0.859);
+    background: linear-gradient(180deg, dodgerblue 40%, rgb(33, 100, 215) 70%, rgb(65, 154, 232) 100%)
 }
 .tile .tile-heading span.message {
-    color: rgb(116, 163, 22);
+    color: rgb(169, 246, 15);
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    
 }
 .tile .tile-heading h4 {
     font-family: 'Julius Sans One', sans-serif;
     font-size: 18px;
-    color: black;
+    color: white;
     margin: 40px 0;
 }
 .tile .tile-heading h4 span {
-    color: black;
+    color: skyblue;
 }
 .tile .tile-body {
     padding: 0;

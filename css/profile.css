@@ -1,8 +1,8 @@
 header {
-    background-image: linear-gradient(180deg, dodgerblue 40%, rgb(102, 171, 240) 80%, rgb(0, 217, 255) 100%);
     height: 450px;
     padding-top: 65px;
     text-align: center;
+    background: linear-gradient(180deg, dodgerblue 40%, rgb(33, 100, 215) 70%, rgb(65, 154, 232) 100%);
 }
 
 header #user-info h4, header #user-info p {
@@ -18,8 +18,8 @@ header #user-info p span.bullet {
 }
 
 header #user-info img {
-    height: 190px;
-    width: 190px;
+    height: 160px;
+    width: 160px;
     border-radius: 50%;
     border: 3px solid white;
     margin-bottom: 15px;
@@ -33,6 +33,8 @@ section#ride-details {
 section#ride-details .square {
     border-radius: 5px;
     padding-top: 35px;
+    box-shadow: 0 2px 6px 3px rgba(0, 0, 0, 0.06);
+    border: 0;
 }
 section#ride-details .square p {
     font-weight: bold;
