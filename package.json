@@ -16,7 +16,8 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate": "babel-node ./src/models/databaseMigrations",
     "migration": "node ./build/models/databaseMigrations",
-    "seed": "babel-node ./src/helpers/seedData"
+    "seed": "babel-node ./src/helpers/seedData",
+    "test1": "export NODE_ENV=test && npm run migrate && and npm run test:dev"
   },
   "author": "",
   "license": "ISC",
