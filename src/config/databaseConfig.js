@@ -28,7 +28,9 @@ if (process.env.NODE_ENV === 'development') {
 } else if (process.env.NODE_ENV === 'test') {
   console.log('TRAVIS TEST');
   dbConfig = {
-    connectionString: process.env.TRAVIS_DB_URL,
+    user: process.env.DB_LOCAL_TRAVIS_USER,
+    database: process.env.DB_LOCAL_TRAVIS_DATABSE,
+    password: process.env.DB_LOCAL_TRAVIS_PASSWORD,
   };
 }
 
