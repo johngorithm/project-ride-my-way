@@ -45,7 +45,7 @@
                 <br>
 
                 <div class="square">
-                    <h4>POST: <span>/api/v1/rides</span></h4>
+                    <h4>POST: <span>/api/v1/users/rides</span></h4>
                     <p>creates a new ride offer</p>
                 </div>
                 <br>
@@ -53,6 +53,21 @@
                 <div class="square">
                     <h4>POST: <span>/api/v1/rides/:ride_id/request</span></h4>
                     <p>sends a request to join a ride offer</p>
+                </div>
+
+                <div class="square">
+                    <h4>PUT: <span>/api/v1/rides/:ride_id/request/:request_id</span></h4>
+                    <p>sends a request to join a ride offer<br>this route requires `action` query [accept or reject]</p>
+                </div>
+
+                <div class="square">
+                    <h4>PUT: <span>/api/v1/auth/signup</span></h4>
+                    <p>Register a user</p>
+                </div>
+
+                <div class="square">
+                    <h4>PUT: <span>/api/v1/auth/login</span></h4>
+                    <p>Login a user]</p>
                 </div>
             </div>
 
