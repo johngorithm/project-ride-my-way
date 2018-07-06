@@ -178,6 +178,7 @@ p {
     border: 1px solid rgb(231, 226, 226);
     background: white;
     border-radius: 3px;
+    box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.05);
 }
 
 .tile .tile-heading {
@@ -187,7 +188,7 @@ p {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     height: 130px;
-    background: rgba(247, 243, 243, 0.604);
+    background: rgba(30, 143, 255, 0.29);
 }
 .tile .tile-heading span.message {
     color: rgb(116, 163, 22);
@@ -365,6 +366,7 @@ nav ul > li > a {
     text-decoration: none;
     color:white;
     display: inline-block;
+    margin-top: 3px;
     padding: 13px 8px;
 }
 
@@ -443,8 +445,8 @@ p.welcome-message {
     border-radius: 25px;
     font-weight: bold;
 }
-button:visited {
-    border: 1px solid transparent;     
+button:active {
+    outline: 0;
 }
 .button-white {
     color: dodgerblue;
@@ -465,8 +467,8 @@ button:visited {
     border-color: dodgerblue;
     color: dodgerblue;
 }
-button:active {
-    border: 1px solid transparent; 
+button:focus {
+    outline: 0;
 }
 
 /*lOGIN PAGE AND REGISTER PAGE STYLES**/
@@ -501,13 +503,13 @@ p.error-message {
 @media only screen and (min-width: 768px) {
     .inner-container {
         text-align: left;
-        padding-left: 20px;
+        padding-left: 15px;
     }
 }
 
 @media only screen and (min-width: 1000px) {
     .inner-container {
-        width: 75%;
+        width: 80%;
         padding-left: 4%;
     }
 }
