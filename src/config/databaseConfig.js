@@ -6,7 +6,6 @@ dotenv.config();
 
 let dbConfig;
 if (process.env.NODE_ENV === 'development') {
-  console.log('dev');
   dbConfig = {
     user: process.env.DB_LOCAL_USER,
     host: process.env.DB_LOCAL_HOST,
@@ -15,7 +14,6 @@ if (process.env.NODE_ENV === 'development') {
     port: process.env.DB_LOCAL_PORT,
   };
 } else if (process.env.NODE_ENV === 'dev-test') {
-  console.log('dev-test');
   dbConfig = {
     user: process.env.DB_LOCAL_TEST_USER,
     host: process.env.DB_LOCAL_TEST_HOST,
@@ -26,7 +24,6 @@ if (process.env.NODE_ENV === 'development') {
 } else if (process.env.NODE_ENV === 'production') {
   dbConfig = { connectionString: process.env.DATABASE_URL };
 } else if (process.env.NODE_ENV === 'test') {
-  console.log('TRAVIS TEST');
   dbConfig = {
     user: process.env.DB_LOCAL_TRAVIS_USER,
     database: process.env.DB_LOCAL_TRAVIS_DATABSE,

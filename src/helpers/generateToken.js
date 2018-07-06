@@ -10,5 +10,4 @@ const token = `${jwt.sign({
   firstname: 'John',
 }, process.env.SECRET_KEY, { expiresIn: '24h' })}`;
 
-console.log(token);
 export default token;
