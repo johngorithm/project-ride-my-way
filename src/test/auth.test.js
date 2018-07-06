@@ -34,7 +34,6 @@ describe('TESTS FOR RIDE MY WAY API AUTH ENDPOINTS', () => {
           response.body.should.be.a('object');
           response.body.should.have.property('status');
           response.body.status.should.equal(true);
-          console.log(response.body);
           done();
         });
     });
@@ -82,7 +81,6 @@ describe('TESTS FOR RIDE MY WAY API AUTH ENDPOINTS', () => {
         })
         .end((error, response) => {
           expect(response).to.have.status(200);
-          console.log(response.body);
           expect(response.body).to.be.an('object');
           expect(response.body).to.have.property('status');
           expect(response.body.status).to.equal(true);
