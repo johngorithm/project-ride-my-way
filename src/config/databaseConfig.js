@@ -5,15 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 let dbConfig;
-if (process.env.NODE_ENV === 'development') {
-  dbConfig = {
-    user: process.env.DB_LOCAL_USER,
-    host: process.env.DB_LOCAL_HOST,
-    database: process.env.DB_LOCAL_DATABSE,
-    password: process.env.DB_LOCAL_PASSWORD,
-    port: process.env.DB_LOCAL_PORT,
-  };
-} else if (process.env.NODE_ENV === 'dev-test') {
+if (process.env.NODE_ENV === 'dev-test') {
   dbConfig = {
     user: process.env.DB_LOCAL_TEST_USER,
     host: process.env.DB_LOCAL_TEST_HOST,
@@ -28,6 +20,15 @@ if (process.env.NODE_ENV === 'development') {
     user: process.env.DB_LOCAL_TRAVIS_USER,
     database: process.env.DB_LOCAL_TRAVIS_DATABSE,
     password: process.env.DB_LOCAL_TRAVIS_PASSWORD,
+  };
+} else {
+  console.log('dev');
+  dbConfig = {
+    user: process.env.DB_LOCAL_USER,
+    host: process.env.DB_LOCAL_HOST,
+    database: process.env.DB_LOCAL_DATABSE,
+    password: process.env.DB_LOCAL_PASSWORD,
+    port: process.env.DB_LOCAL_PORT,
   };
 }
 

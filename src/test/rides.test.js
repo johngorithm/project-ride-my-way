@@ -101,7 +101,7 @@ describe('TESTS FOR RIDE MY WAY API ENDPOINTS', () => {
           response.body.should.have.property('status');
           response.body.status.should.equal(false);
           response.body.should.have.property('message');
-          response.body.message.should.have.equal('Required field(s) is/are missing');
+          response.body.message.should.have.equal('You submitted Invalid Data!');
           response.status.should.equal(400);
           done();
         });
