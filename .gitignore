@@ -9,7 +9,7 @@
 # production
 /build
 
-
+.env
 
 # misc
 .nyc_output
