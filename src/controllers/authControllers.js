@@ -86,7 +86,7 @@ class AuthController {
             firstname: user.rows[0].firstname,
           };
 
-          jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' }, (tokenError, loginToken) => {
+          jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' }, (tokenError, token) => {
             if (tokenError) {
               res.status(500).json({
                 message: 'Sorry, we are unable to login you in this time, Please try again',
@@ -98,7 +98,7 @@ class AuthController {
                 message: `Welcome ${payload.firstname}, you are successfully logged in`,
                 status: true,
                 user: payload,
-                loginToken,
+                token,
               });
             }
           });
