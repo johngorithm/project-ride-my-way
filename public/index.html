@@ -19,7 +19,6 @@
             </ul>
             <ul class="nav-items nav-right">
                 <li class="nav-item"> <a href="/">DOCS</a> </li>
-                <li class="nav-item"> <a href="/">API REFERENCE</a> </li>
             </ul>
         </div>
     </nav>
@@ -34,13 +33,13 @@
             <div class="container">
                 <div class="square">
                     <h4>GET: <span>/api/v1/rides</span></h4>
-                    <p>returns all available ride offers</p>
+                    <p>get all available ride offers</p>
                 </div>
                 <br>
 
                 <div class="square">
-                    <h4>GET: <span>/api/v1/rides/:ride_id</span></h4>
-                    <p>returns a ride offer with :ride_id</p>
+                    <h4>GET: <span>/api/v1/rides/:rideId</span></h4>
+                    <p>get information about a specific ride offers</p>
                 </div>
                 <br>
 
@@ -51,23 +50,28 @@
                 <br>
 
                 <div class="square">
-                    <h4>POST: <span>/api/v1/rides/:ride_id/request</span></h4>
-                    <p>sends a request to join a ride offer</p>
+                    <h4>POST: <span>/api/v1/rides/:rideId/requests</span></h4>
+                    <p>join a ride offer</p>
                 </div>
                 <br>
                 <div class="square">
-                    <h4>PUT: <span>/api/v1/rides/:ride_id/request/:request_id</span></h4>
-                    <p>sends a request to join a ride offer<br>this route requires `action` query [accept or reject]</p>
+                    <h4>GET: <span>/api/v1/users/rides/:rideId/requests</span></h4>
+                    <p>Get all requests made to a ride offer</p>
                 </div>
                 <br>
                 <div class="square">
-                    <h4>PUT: <span>/api/v1/auth/signup</span></h4>
+                    <h4>PUT: <span>/api/v1/rides/:rideId/requests/:requestId</span></h4>
+                    <p>Accepts or Rejects a ride request.<br>This endpoint requires an `action` query - `accept` or `reject`</p>
+                </div>
+                <br>
+                <div class="square">
+                    <h4>POST: <span>/api/v1/auth/signup</span></h4>
                     <p>Register a user</p>
                 </div>
                 <br>
                 <div class="square">
-                    <h4>PUT: <span>/api/v1/auth/login</span></h4>
-                    <p>Login a user]</p>
+                    <h4>POST: <span>/api/v1/auth/login</span></h4>
+                    <p>Login a user</p>
                 </div>
             </div>
 
