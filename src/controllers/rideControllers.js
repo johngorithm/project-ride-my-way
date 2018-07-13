@@ -34,13 +34,7 @@ class RideController {
     const query = 'SELECT * FROM rides WHERE ride_id = $1';
     pool.query(query, [rideId], (error, requestedRide) => {
       if (error) {
-        if (error.code === '23503') {
-          res.status(400).json({
-            message: 'The Ride you are requesting does NOT exist',
-            status: false,
-            error: error.message,
-          });
-        } else if (error.code === '22P02') {
+        if (error.code === '22P02') {
           res.status(400).json({
             message: 'The ride ID of this request is invalid',
             status: false,
@@ -80,7 +74,7 @@ class RideController {
     pool.query(query, queryValues, (error, newRequest) => {
       if (error) {
         if (error.code === '23503') {
-          res.status(400).json({
+          res.status(404).json({
             message: 'You are requesting to join a ride that does not exist',
             status: false,
             error: error.message,

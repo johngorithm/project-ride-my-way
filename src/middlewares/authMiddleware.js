@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const verifyToken = (req, res, next) => {
-  const token = req.body.token || req.query.token || req.headers['x-access-token'];
+  const token = req.headers['x-access-token'];
 
   if (token) {
     jwt.verify(token, process.env.SECRET_KEY, (error, decode) => {
@@ -9,9 +9,9 @@ const verifyToken = (req, res, next) => {
         res.status(403).json({
           message: 'Failed to authenticate token',
           status: false,
-          error: 'Token is Invalid or does not exist',
+          error: 'Invalid Or Expired Token',
         });
-      } else if (decode) {
+      } else {
         req.decode = decode;
         next();
       }
@@ -20,7 +20,7 @@ const verifyToken = (req, res, next) => {
     res.status(403).json({
       message: 'Failed to authenticate token',
       status: false,
-      error: 'Token is Invalid or does not exist',
+      error: 'No Access Token Provided',
     });
   }
 };
