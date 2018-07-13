@@ -1,0 +1,43 @@
+main {
+  background-image: url('../images/carpooling-apps-like-lyft-624x351.jpeg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100%;
+}
+
+main.content .wrapper {
+  color: white;
+  position: absolute;              
+  top: 50%;                        
+  transform: translate(0, -50%);
+  right: 0;
+  left: 0;
+}
+
+main.content .wrapper p {
+  color: white;
+  font-size: 20px;
+}
+
+main.content .wrapper h2{
+  color: white;
+  font-size: 50px;
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 30px;
+}
+
+main.content .overlay {
+  background: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+main.content .wrapper a .button {
+  padding: 10px 40px;
+  font-weight: bold;
+
+}
