@@ -5,12 +5,11 @@ import chaiHttp from 'chai-http';
 import app from '../app';
 import token from '../helpers/generateToken';
 
-
 chai.use(chaiHttp);
 should();
 
 
-describe('TESTS FOR RIDE MY WAY API ENDPOINTS', () => {
+describe('TESTS FOR RIDE MY WAY API RIDES` ENDPOINTS', () => {
   describe('Test: 404 Not Found', () => {
     it('should return a status Code of 404 for unknown route', (done) => {
       chai.request(app).get('/unknown').end((error, response) => {
@@ -24,6 +23,7 @@ describe('TESTS FOR RIDE MY WAY API ENDPOINTS', () => {
     it('should response successfully under good network conditions', (done) => {
       chai.request(app).get('/').end((error, response) => {
         expect(response).to.have.status(200);
+        response.text.should.contain('<!DOCTYPE html>');
         response.type.should.equal('text/html');
         done();
       });
@@ -64,72 +64,19 @@ describe('TESTS FOR RIDE MY WAY API ENDPOINTS', () => {
         .set('x-access-token', token)
         .end((error, response) => {
           expect(response).to.have.status(404);
-          done();
-        });
-    });
-  });
-
-
-  describe('POST A RIDE OFFER ENDPOINT TESTS', () => {
-    it('should return successfully when posted data has values for all the required fields', (done) => {
-      chai.request(app)
-        .post('/api/v1/users/rides')
-        .send({
-          destination: 'Oja',
-          time: '5:00 PM',
-          date: '12/6/2018',
-          driver: 'New Man',
-          takeOffVenue: 'Epic Tower',
-        })
-        .set('x-access-token', token)
-        .end((error, response) => {
-          expect(response).to.have.status(200);
-          done();
-        });
-    });
-
-
-    it('should return unsuccessfully, when a post request is made with missing required fields', (done) => {
-      chai.request(app)
-        .post('/api/v1/users/rides')
-        .set('x-access-token', token)
-        .send({})
-        .end((error, response) => {
-          response.body.errors.should.be.an('object');
-          response.body.errors.should.have.property('destination');
-          response.body.errors.destination.should.equal('destination is required');
-          response.body.should.have.property('status');
+          response.body.should.have.property('error');
+          response.body.error.should.equal('Ride Not Found!');
           response.body.status.should.equal(false);
-          response.body.should.have.property('message');
-          response.body.message.should.have.equal('You submitted Invalid Data!');
-          response.status.should.equal(400);
           done();
         });
     });
 
-    it('should return with a status code of 400 : Bad Request when a post request is made with no data', (done) => {
+    it('should fail when ride ID is INVALID', (done) => {
       chai.request(app)
-        .post('/api/v1/users/rides')
+        .get('/api/v1/rides/2id')
         .set('x-access-token', token)
-        .send()
         .end((error, response) => {
-          response.status.should.equal(400);
-          done();
-        });
-    });
-
-
-    it('should return with a status code of 400 : Bad Request when required post properties exist but having empty strings as value', (done) => {
-      chai.request(app)
-        .post('/api/v1/users/rides')
-        .set('x-access-token', token)
-        .send({
-          destination: '',
-          time: '',
-          date: '',
-        })
-        .end((error, response) => {
-          response.status.should.equal(400);
+          expect(response).to.have.status(400);
           done();
         });
     });
@@ -155,11 +102,24 @@ describe('TESTS FOR RIDE MY WAY API ENDPOINTS', () => {
         });
     });
 
-    it('should return an object with `status` property equal to `failure` when the ride offer in question does not exist or is deleted or the `request to operation` is not successful', (done) => {
+    it('should fail when the ride been requested does not exists', (done) => {
       chai.request(app)
         .post('/api/v1/rides/56/requests')
         .set('x-access-token', token)
         .end((error, response) => {
+          response.status.should.equal(404);
+          response.body.status.should.equal(false);
+          response.body.should.have.property('error');
+          done();
+        });
+    });
+
+    it('should fail when ride ID being requested is INVALID', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides/56invalid/requests')
+        .set('x-access-token', token)
+        .end((error, response) => {
+          response.status.should.equal(400);
           response.body.status.should.equal(false);
           response.body.should.have.property('error');
           done();

@@ -36,41 +36,14 @@ const requestTableQuery = `CREATE TABLE IF NOT EXISTS requests (
 )`;
 
 
-pool.query('DROP TABLE IF EXISTS users CASCADE', (userTableDelError, res) => {
-  if (userTableDelError) {
-    console.log(userTableDelError.message);
-  }
-  pool.query('DROP TABLE IF EXISTS rides CASCADE', (rideTableDelError, rideResponse) => {
-    if (rideTableDelError) {
-      console.log(rideTableDelError.message);
-    }
-
-    pool.query('DROP TABLE IF EXISTS requests CASCADE', (requestTableDelError, reqResponse) => {
-      if (requestTableDelError) {
-        console.log(requestTableDelError.message);
-      }
-      console.log('done deleting');
-      pool.query(userTableQuery, (error, response) => {
-        if (error) {
-          console.error(error.message);
-        }
-        PopulateDB.addUsers();
-        console.log('next');
-        pool.query(rideTableQuery, (error, res) => {
-          if (error) {
-            console.error(error.message);
-          }
-          PopulateDB.addRides();
-          console.log('next');
-          pool.query(requestTableQuery, (error, result) => {
-            if (error) {
-              console.error(error.message);
-            }
-            PopulateDB.addRequests();
-            console.log('done');
-          });
-        });
-      });
-    });
-  });
-});
+pool.query('DROP TABLE IF EXISTS users CASCADE')
+  .then(() => pool.query('DROP TABLE IF EXISTS rides CASCADE'))
+  .then(() => pool.query('DROP TABLE IF EXISTS requests CASCADE'))
+  .then(() => pool.query(userTableQuery))
+  .then(() => PopulateDB.addUsers())
+  .then(() => pool.query(rideTableQuery))
+  .then(() => PopulateDB.addRides())
+  .then(() => pool.query(requestTableQuery))
+  .then(() => PopulateDB.addRequests())
+  .then(() => console.log('All Done'))
+  .catch(e => console.log(e.message));

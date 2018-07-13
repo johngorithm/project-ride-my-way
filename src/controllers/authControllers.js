@@ -19,15 +19,8 @@ class AuthController {
     pool.query(query, values, (error, addedUser) => {
       if (error) {
         if (error.code === '23505') {
-          res.status(500).json({
+          res.status(403).json({
             message: 'This user already exist in our database, Please login instead',
-            status: false,
-            data: req.body,
-            error: error.message,
-          });
-        } else if (error.code === '22001') {
-          res.status(500).json({
-            message: 'Ooops!, You just exceeded the maximum number of characters allowed for this field.',
             status: false,
             data: req.body,
             error: error.message,
@@ -103,7 +96,7 @@ class AuthController {
             }
           });
         } else {
-          res.status(400).json({
+          res.status(404).json({
             message: `${user.rows[0].firstname}, your password is incorrect, please check and try again`,
             status: false,
             data: req.body,

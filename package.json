@@ -11,13 +11,19 @@
     "start": "node ./build/app.js",
     "start:dev": "nodemon --exec babel-node src/app.js",
     "go": "npm run build && npm start",
-    "test": "nyc --reporter=html --reporter=text mocha ./build/test/*.test.js  --exit --timeout=20000",
-    "test:dev": "nyc --reporter=html --reporter=text mocha ./src/test/*.test.js  --compilers js:babel-core/register --exit --timeout=20000",
+    "test": "nyc --reporter=html --reporter=text mocha ./build/test/*.test.js  --exit",
+    "test:dev": "nyc --reporter=html --reporter=text mocha ./src/test/*.test.js  --compilers js:babel-core/register --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate": "babel-node ./src/models/databaseMigrations",
     "migration": "node ./build/models/databaseMigrations",
     "seed": "babel-node ./src/helpers/seedData",
-    "test1": "export NODE_ENV=test && npm run migrate && and npm run test:dev"
+    "test1": "export NODE_ENV=dev-test && npm run migrate && npm run test:dev"
+  },
+  "nyc": {
+    "exclude": [
+      "**/*.test.js",
+      "**/src/config/**"
+    ]
   },
   "author": "",
   "license": "ISC",
