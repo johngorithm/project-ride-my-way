@@ -245,7 +245,7 @@ describe('TESTS FOR RIDE MY WAY API AUTH ENDPOINTS', () => {
           password: 'incorrectpassword',
         })
         .end((error, response) => {
-          expect(response).to.have.status(404);
+          expect(response).to.have.status(401);
           response.body.should.be.a('object');
           response.body.should.have.property('status');
           response.body.status.should.equal(false);
