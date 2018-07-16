@@ -1,9 +1,9 @@
 
 # BUILD A PRODUCT: Ride-My-Way 
 
-[![Build Status](https://travis-ci.org/johngorithm/project-ride-my-way.svg?branch=master)](https://travis-ci.org/johngorithm/project-ride-my-way) 
+[![Build Status](https://travis-ci.org/johngorithm/project-ride-my-way.svg?branch=develop)](https://travis-ci.org/johngorithm/project-ride-my-way) 
 
-[![Coverage Status](https://coveralls.io/repos/github/johngorithm/project-ride-my-way/badge.svg?branch=master)](https://coveralls.io/github/johngorithm/project-ride-my-way?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/johngorithm/project-ride-my-way/badge.svg?branch=master)](https://coveralls.io/github/johngorithm/project-ride-my-way?branch=develop)
 
 ## Project Overview  
 Ride-my App is a carpooling application that provides drivers with the ability to create ride offers  and passengers  to join available ride offers. 
