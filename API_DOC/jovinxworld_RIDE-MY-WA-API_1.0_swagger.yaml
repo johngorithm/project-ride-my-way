@@ -1,0 +1,447 @@
+openapi: 3.0.1
+info:
+  title: Car Pooling API
+  description: This is a car pooling application that allows users to create offers or find one to join
+  version: "1.0"
+  contact:
+    email: "johngorithm@gmail.com"
+servers:
+  - url: 'https://ride-m-way.herokuapp.com'
+
+
+tags:
+- name: "Auth"
+  description: "Everything about your User authentication"
+  externalDocs:
+    description: "ABOUT JWT"
+    url: "http://jwt.io"
+- name: "Ride"
+  description: "Access and Operations on ride offers"
+- name: "User"
+  description: "User defined operations"
+  
+paths:
+  /api/v1/auth/signup:
+    post:
+      tags:
+      - "Auth"
+      description: Register a new user account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref : "#/components/schemas/UserIn"
+
+          application/x-www-form-urlencoded:
+            schema:
+              $ref : "#/components/schemas/UserIn"
+
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref : "#/components/schemas/SignupResponseBody"
+              examples: {}
+        '500':
+          description: "Server Error"
+        '400':
+          description: "Invalid Input"
+        '403':
+          description: "User Already Exist"
+        503:
+          description: Gateway Timeout
+              
+              
+  /api/v1/auth/login:
+    post: 
+      tags:
+      - "Auth"
+      description: Login an existing user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                password:
+                  type: string
+                  example: johndoe101
+                username:
+                  type: string
+                  example: strongpassword
+
+      responses:
+        '200':
+          description: Login Successful
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: "#/components/schemas/SignupResponseBody"
+        401:
+          description: "Incorrect Password"
+        500:
+          description: "Server error"
+        400:
+          description: "Invalid Input"
+        404:
+          description: "User Not Found"
+        503:
+          description: Gateway Timeout
+              
+  
+  /api/v1/rides:
+    get:
+      tags:
+      - "Ride"
+      description: Get all available rides
+      parameters:
+        - $ref: "#/components/parameters/Token"
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: "#/components/schemas/AllRidesOutput"
+        401:
+          description: "Incorrect Password"
+        500:
+          description: "Server error"
+        400:
+          description: "Invalid Input"
+        404:
+          description: "User Not Found"
+        403:
+          description: "Token Is Invalid Or Does Not Exist "
+        503:
+          description: Gateway Timeout
+              
+  /api/v1/rides/{rideId}:
+    get:
+      tags:
+      - "Ride"
+      description: Get a specific ride offer
+      parameters:
+      - $ref: "#/components/parameters/Token"
+      - $ref: "#/components/parameters/RideId"
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SingleRideOutput'
+        500:
+          description: "Server error"
+        400:
+          description: "Invalid Input"
+        404:
+          description: "Ride Not Found"
+        403:
+          description: "No token Provided"
+        503:
+          description: Gateway Timeout
+              
+  
+
+          
+  /api/v1/users/rides:
+    post:
+      tags:
+      - "User"
+      description: Create a Ride offer
+      parameters:
+        - $ref: '#/components/parameters/Token'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                date:
+                  type: string
+                  format: date
+                  example: "9/12/2018"
+                destination:
+                  type: string
+                  example: Lekki Phase 2
+                time:
+                  type: string
+                  format: time
+                  example: "03:45 PM"
+                takeOffVenue:
+                  type: string
+                  example: Anthony bus stop
+
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CreateRideResponseBody'
+        403:
+          description: Token Is Invalid Or Does Not Exist
+        500:
+          description: Server Error
+        503:
+          description: Gateway Timeout
+              
+  /api/v1/users/rides/{rideId}/requests:
+    get:
+      tags:
+      - "User"
+      description: Get All requests for a specific ride offer
+      parameters:
+        - $ref: '#/components/parameters/RideId'
+        - $ref: '#/components/parameters/Token'
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/GetRequestsResponse'
+        400:
+          description: Invalid Ride ID
+        500:
+          description: Server Error
+        404:
+          description: Ride Not Found
+        403:
+          description: Token Is Invalid Or Does Not Exist
+        503:
+          description: Gateway Timeout
+              
+          
+  /api/v1/users/rides/{rideId}/requests/{requestId}:
+    put:
+      tags:
+      - "User"
+      description: Accept or Reject a ride request. This endpoint requires `action` query parameter which take in `accept` or `reject` as ***value*** but not ***both*** at the same time
+      parameters:
+        - name: action
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [accept,reject]
+          
+        - $ref: '#/components/parameters/Token'
+        - $ref: '#/components/parameters/RideId'
+        - $ref: '#/components/parameters/RequestId'
+
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: "#/components/schemas/UpdateRequestResponse"
+        400:
+          description: Invalid `Query parameter`, `Ride ID` or `Request ID`
+        500:
+          description: Server Error
+        404:
+          description: Either `Ride` Or `Request` Not Found
+        403:
+          description:  Token Is Invalid Or Does Not Exist
+        503:
+          description: Gateway Timeout
+              
+components:              
+  schemas:
+    GetRequestsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        requests:
+          type: array
+          items:
+            $ref: "#/components/schemas/RequestResponse"
+              
+            
+    UpdateRequestResponse:
+      type: object
+      properties:
+        messages:
+          type: string
+        status:
+          type: boolean
+        request:
+          $ref: '#/components/schemas/RequestResponse'
+    
+    UserIn:
+      type: object
+      properties:
+        firstname:
+          type: string
+          maxLength: 50
+        password:
+          type: string
+          maxLength: 400
+        email:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+          maxLength: 50
+        lastname:
+          type: string
+          maxLength: 50
+          
+    SignupResponseBody:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        user:
+          type: object
+          properties:
+            user_id:
+              type: integer
+              format: int64
+              example: 10
+            username:
+              type: string
+              example: johndoe101
+            firstname:
+              type: string
+              example: John
+        token:
+          type: string
+          example: >-
+            e.g yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZmlyc3RuYW1lIjoiSGVucnkiLCJ1c2VyX2lkIjo0OCwiaWF0IjoxNTMxNTY2NzQwLCJleHAiOjE1MzE2NTMxNDB9.zYuVttaIs5tB6Q6ZeBsNke1oJLNm4PGDcQZBqnaFu9a
+            
+    SingleRideOutput:
+      type: object
+      properties:
+        message: 
+          type: string
+          example: Ride data retrieval was successful
+        status:
+          type: boolean
+          example: true
+        ride:
+          $ref: '#/components/schemas/RideResponse'
+    
+      
+    AllRidesOutput:
+      type: object
+      properties:
+        message:
+          type: string
+          example: All rides retrieved successfully
+        status:
+          type: boolean
+          example: true
+        rides:
+          type: array
+          items:
+            $ref: '#/components/schemas/RideResponse'
+    
+    RequestResponse:
+      type: object
+      properties:
+        request_id:
+          type: integer
+          format: int64
+          example: 3
+        sender_id:
+          type: integer
+          format: int64
+          example: 1
+        ride_id: 
+          type: integer
+          format: int64
+          example: 3
+        created_on: 
+          type: string
+          format: date-time
+          example: '2018-07-05T16:41:24.045Z'
+        status: 
+          type: string
+          example: pending
+        sender: 
+          type: string
+          example: Jeremy
+        
+    
+    RideResponse:
+      type: object
+      properties:
+        ride_id:
+          type: integer
+          format: int64
+          example: 2
+        destination:
+          type: string
+          example: Lekki
+        time:
+          type: string
+          format: time
+          example: '15:00:00'
+        date:
+          type: string
+          format: time
+          example: '2018-08-12T00:00:00.000Z'
+        take_of_venue:
+          type: string
+          example: Anthony bus terminal
+        creator:
+          type: string
+          example: John
+        creator_id:
+          type: integer
+          example: 3
+        created_on:
+          type: string
+          format: date-time
+          example: '2018-07-10T14:45:31.614Z'
+  
+    CreateRideResponseBody:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Your ride to Kanji Dan was successfully created
+        status:
+          type: boolean
+          example: true
+        ride:
+          $ref: '#/components/schemas/RideResponse'
+          
+          
+          
+  parameters:
+    Token:
+      name: x-access-token
+      in: header
+      schema:
+        type: string
+      required: true
+      example: >-
+        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwidXNlcm5hbWUiOiJzdHJpbmciLCJmaXJzdG5hbWUiOiJzdHJpbmciLCJpYXQiOjE1MzE1NjcyNjYsImV4cCI6MTUzMTY1MzY2Nn0.snyd5l-gpnbqJ09u8ahlu2mEYVHq_EK38m9kM-0bwea
+              
+    RideId:
+      name: rideId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      required: true
+      example: 3
+              
+    RequestId:
+      name: requestId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      required: true
+      example: 2
