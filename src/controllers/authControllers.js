@@ -96,7 +96,7 @@ class AuthController {
             }
           });
         } else {
-          res.status(404).json({
+          res.status(401).json({
             message: `${user.rows[0].firstname}, your password is incorrect, please check and try again`,
             status: false,
             data: req.body,
