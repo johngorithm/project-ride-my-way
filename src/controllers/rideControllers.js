@@ -94,21 +94,39 @@ class RideController {
             error: 'Cannot Request Own Ride',
           });
         } else {
-          // GOOD : SAVE REQUEST
-          const query = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING *';
-          const queryValues = [sender, userId, rideId, 'pending'];
-          pool.query(query, queryValues, (error2, newRequest) => {
-            if (error2) {
+          // CHECK IF USER ALREADY PLACE A REQUEST ON THIS RIDE
+          pool.query('SELECT EXISTS (SELECT 1 FROM requests WHERE ride_id = $1) AS "hasRequested"', [rideId], (error3, request) => {
+            if (error3) {
               res.status(500).json({
-                message: 'Something went wrong, Ride cannot be fetched',
+                message: 'Something went wrong, Was not able to determine your ride request status',
                 status: false,
-                error: error2.message,
+                error: error3.message,
               });
-            } else if (newRequest.rows[0]) {
-              res.status(200).json({
-                message: 'Your request was successfully received. You will be notified when accepted or rejected',
-                status: true,
-                request: newRequest.rows[0],
+            } else if (request.rows[0].hasRequested) {
+              // GOOD : CHECKOUT IF REQUEST ALREADY
+              res.status(403).json({
+                message: 'Sorry, You cannot request a ride more than once',
+                status: false,
+                error: 'Request Already Exist',
+              });
+            } else {
+              // GOOD : SAVE REQUEST
+              const query = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING *';
+              const queryValues = [sender, userId, rideId, 'pending'];
+              pool.query(query, queryValues, (error2, newRequest) => {
+                if (error2) {
+                  res.status(500).json({
+                    message: 'Something went wrong, Ride cannot be fetched',
+                    status: false,
+                    error: error2.message,
+                  });
+                } else if (newRequest.rows[0]) {
+                  res.status(200).json({
+                    message: 'Your request was successfully received. You will be notified when accepted or rejected',
+                    status: true,
+                    request: newRequest.rows[0],
+                  });
+                }
               });
             }
           });
