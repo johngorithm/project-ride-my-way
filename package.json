@@ -15,7 +15,7 @@
     "test": "nyc --reporter=html --reporter=text mocha ./src/test/*.test.js  --compilers js:babel-core/register --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate": "babel-node ./src/models/databaseMigrations",
-    "migration": "node ./build/models/databaseMigrations"
+    "migration": "babel-node ./src/models/productionDatabaseMigration"
   },
   "nyc": {
     "exclude": [

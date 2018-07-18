@@ -1,7 +1,7 @@
 
 import pool from '../config/databaseConfig';
 
-const rideQuery = 'INSERT INTO rides (destination, time, date, take_of_venue,creator, creator_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+const rideQuery = 'INSERT INTO rides (destination, time, date, take_off_venue,creator, creator_id, capacity, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
 const userQuery = 'INSERT INTO users ( firstname, lastname, username, email, password ) VALUES ( $1, $2, $3, $4, $5) RETURNING *';
 const requestQuery = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING *';
 
@@ -18,11 +18,11 @@ const users = [
 ];
 
 const rides = [
-  ['Ikeja', '12:45 PM', '3/12/2018', 'Epic Tower', 'John', 1],
-  ['Lekki', '03:00 PM', '8/12/2018', 'Anthony bus terminal', 'Foo', 3],
-  ['Oja', '05:00 PM', '8/8/2018', 'Iyana Ipaja bus stop', 'Dera', 2],
-  ['Ikotun', '06:00 AM', '2/8/2018', 'Ikeja Along', 'Love', 6],
-  ['Sango', '04:00 AM', '2/8/2018', 'Ipaja bus stop', 'John', 1],
+  ['Ikeja', '12:45 PM', '3/12/2018', 'Epic Tower', 'John', 1, 4, 'empty'],
+  ['Lekki', '03:00 PM', '8/12/2018', 'Anthony bus terminal', 'Foo', 3, 5, 'empty'],
+  ['Oja', '05:00 PM', '8/8/2018', 'Iyana Ipaja bus stop', 'Dera', 2, 8, 'empty'],
+  ['Ikotun', '06:00 AM', '2/8/2018', 'Ikeja Along', 'Love', 6, 4, 'empty'],
+  ['Sango', '04:00 AM', '2/8/2018', 'Ipaja bus stop', 'John', 1, 7, 'empty'],
 ];
 
 const requests = [
@@ -57,6 +57,7 @@ class PopulateDB {
       .then(() => pool.query(rideQuery, rides[1]))
       .then(() => pool.query(rideQuery, rides[2]))
       .then(() => pool.query(rideQuery, rides[3]))
+      .then(() => pool.query(rideQuery, rides[4]))
       .then(lastAddedRide => console.log(`All rides added, Ride to ${lastAddedRide.rows[0].destination} is the last user`))
       .catch(e => console.log(e.message));
   }

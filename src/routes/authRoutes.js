@@ -1,11 +1,11 @@
 import express from 'express';
-import validateInput from '../helpers/inputValidator';
 import AuthController from '../controllers/authControllers';
+import ValidateInput from '../helpers/inputValidator';
 
 
 const authRouter = express.Router();
 
-authRouter.post('/signup', validateInput, AuthController.signUp);
-authRouter.post('/login', validateInput, AuthController.logIn);
+authRouter.post('/signup', ValidateInput.validateUser, AuthController.signUp);
+authRouter.post('/login', ValidateInput.validateUser, AuthController.logIn);
 
 export default authRouter;

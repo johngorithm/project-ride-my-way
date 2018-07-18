@@ -50,9 +50,9 @@ describe('TESTS FOR RIDE MY WAY API RIDES` ENDPOINTS', () => {
           expect(response.type).equal('application/json');
           expect(response).have.status(200);
           expect(response.body).to.be.an('object');
-          expect(Object.keys(response.body.ride).length).to.equal(8);
           expect(response.body.ride).have.property('destination');
           expect(typeof response.body.ride.destination).be.a('string');
+          expect(response.body.ride.status).to.equal('empty');
           done();
         });
     });
