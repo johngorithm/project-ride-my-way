@@ -68,8 +68,9 @@ class RideController {
     const userId = req.decode.user_id;
     const sender = req.decode.firstname;
 
-    const query = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING sender,sender_id, ride_id, status';
+    const query = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING *';
     const queryValues = [sender, userId, rideId, 'pending'];
+
 
     pool.query(query, queryValues, (error, newRequest) => {
       if (error) {

@@ -18,6 +18,7 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
           time: '5:00 PM',
           date: '12/6/2018',
           takeOffVenue: 'Egbeda',
+          capacity: 4,
         })
         .set('x-access-token', token)
         .end((error, response) => {
@@ -33,9 +34,9 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
         .set('x-access-token', token)
         .send({})
         .end((error, response) => {
-          response.body.errors.should.be.an('object');
-          response.body.errors.should.have.property('destination');
-          response.body.errors.destination.should.equal('destination is required');
+          response.body.error.should.be.an('object');
+          response.body.error.should.have.property('destination');
+          response.body.error.destination.should.equal('destination is required');
           response.body.should.have.property('status');
           response.body.status.should.equal(false);
           response.body.should.have.property('message');
@@ -81,9 +82,61 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
           time: '1',
           date: '13/14/2',
           takeOffVenue: 'somewhere',
+          capacity: 1,
         })
         .end((error, response) => {
           response.status.should.equal(500);
+          done();
+        });
+    });
+
+    it('should fail when capacity is not a postive INTEGER', (done) => {
+      chai.request(app)
+        .post('/api/v1/users/rides')
+        .set('x-access-token', token)
+        .send({
+          destination: 'Ilupeju',
+          time: '03:00 pm',
+          date: '1/14/2018',
+          takeOffVenue: 'somewhere',
+          capacity: 5.6,
+        })
+        .end((error, response) => {
+          response.status.should.equal(400);
+          done();
+        });
+    });
+
+    it('should fail when `capacity` receives a string input that is not a number', (done) => {
+      chai.request(app)
+        .post('/api/v1/users/rides')
+        .set('x-access-token', token)
+        .send({
+          destination: 'Ilupeju',
+          time: '03: 00 pm',
+          date: '1/14/2018',
+          takeOffVenue: 'somewhere',
+          capacity: 'isNaN54',
+        })
+        .end((error, response) => {
+          response.status.should.equal(400);
+          done();
+        });
+    });
+
+    it('should return successful when `capacity` is of type `string` but contains a number', (done) => {
+      chai.request(app)
+        .post('/api/v1/users/rides')
+        .set('x-access-token', token)
+        .send({
+          destination: 'Aja',
+          time: '03:00 pm',
+          date: '1/14/2018',
+          takeOffVenue: 'Jibowu busstop, yaba',
+          capacity: '5',
+        })
+        .end((error, response) => {
+          response.status.should.equal(200);
           done();
         });
     });
@@ -143,7 +196,6 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
         .end((error, response) => {
           expect(response).to.have.status(400);
           response.body.status.should.equal(false);
-          response.body.error.should.equal('Invalid update action');
           done();
         });
     });
@@ -154,7 +206,6 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
         .end((error, response) => {
           expect(response).to.have.status(400);
           response.body.status.should.equal(false);
-          response.body.error.should.equal('Invalid update action');
           done();
         });
     });
@@ -166,7 +217,6 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
         .end((error, response) => {
           expect(response).to.have.status(400);
           response.body.status.should.equal(false);
-          response.body.error.should.equal('Invalid update action');
           done();
         });
     });

@@ -40,21 +40,21 @@ class AuthController {
           user_id: addedUser.rows[0].user_id,
         };
 
-        jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' }, (tokenError, userToken) => {
+        jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' }, (tokenError, token) => {
           if (tokenError) {
             res.status(500).json({
               message: 'Your registeration was successful but we are unable to generate a token to Login you in, Please login with your credentials',
               status: false,
               error: 'Unable To Generate Token',
             });
-            return;
+          } else {
+            res.status(200).json({
+              message: `Welcome ${payload.firstname}, your account was successfully created`,
+              status: true,
+              user: payload,
+              token,
+            });
           }
-          res.status(200).json({
-            message: `Welcome ${payload.firstname}, your account was successfully created`,
-            status: true,
-            user: payload,
-            userToken,
-          });
         });
       }
     });
