@@ -68,36 +68,57 @@ class RideController {
     const userId = req.decode.user_id;
     const sender = req.decode.firstname;
 
-    const query = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING *';
-    const queryValues = [sender, userId, rideId, 'pending'];
 
-
-    pool.query(query, queryValues, (error, newRequest) => {
+    // FETCH THE RIDE IN QUESTION FROM DB
+    pool.query('SELECT * FROM rides WHERE ride_id = $1', [rideId], (error, ride) => {
       if (error) {
-        if (error.code === '23503') {
-          res.status(404).json({
-            message: 'You are requesting to join a ride that does not exist',
-            status: false,
-            error: error.message,
-          });
-        } else if (error.code === '22P02') {
+        if (error.code === '22P02') {
           res.status(400).json({
-            message: 'The ID of the ride in this request is invalid',
+            message: 'Your request contains INVALID ride ID',
             status: false,
-            error: error.message,
+            error: 'Invalid Ride ID',
           });
         } else {
           res.status(500).json({
-            message: 'Something went wrong, Ride cannot be fetched',
+            message: 'Something went wrong, Ride was not fetched',
             status: false,
-            error: error.code,
+            error: error.message,
           });
         }
-      } else if (newRequest.rows[0]) {
-        res.status(200).json({
-          message: 'Your request was successfully received, keep an eye on your notification to know the status of your request',
-          status: true,
-          request: newRequest.rows[0],
+      } else if (ride.rows[0]) {
+        if (ride.rows[0].creator_id === req.decode.user_id) {
+          // 403 U CAN'T REQUEST UR OWN RIDE
+          res.status(403).json({
+            message: 'Sorry, You cannot request your own ride',
+            status: false,
+            error: 'Cannot Request Own Ride',
+          });
+        } else {
+          // GOOD : SAVE REQUEST
+          const query = 'INSERT INTO requests (sender,sender_id, ride_id, status) VALUES ($1, $2, $3, $4) RETURNING *';
+          const queryValues = [sender, userId, rideId, 'pending'];
+          pool.query(query, queryValues, (error2, newRequest) => {
+            if (error2) {
+              res.status(500).json({
+                message: 'Something went wrong, Ride cannot be fetched',
+                status: false,
+                error: error2.message,
+              });
+            } else if (newRequest.rows[0]) {
+              res.status(200).json({
+                message: 'Your request was successfully received. You will be notified when accepted or rejected',
+                status: true,
+                request: newRequest.rows[0],
+              });
+            }
+          });
+        }
+      } else {
+        // RIDE NO EXIST
+        res.status(404).json({
+          message: 'You are requesting to join a ride that does not exist',
+          status: false,
+          error: 'Ride Not Found',
         });
       }
     });
