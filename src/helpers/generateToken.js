@@ -10,4 +10,16 @@ const token = `${jwt.sign({
   firstname: 'Dera',
 }, process.env.SECRET_KEY, { expiresIn: '24h' })}`;
 
-export default token;
+const token2 = `${jwt.sign({
+  user_id: 4,
+  username: 'peace',
+  firstname: 'Peace',
+}, process.env.SECRET_KEY, { expiresIn: '24h' })}`;
+
+const token3 = `${jwt.sign({
+  user_id: 1,
+  username: 'johngorithm',
+  firstname: 'John',
+}, process.env.SECRET_KEY, { expiresIn: '24h' })}`;
+
+export { token, token2, token3 };

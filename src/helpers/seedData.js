@@ -18,11 +18,11 @@ const users = [
 ];
 
 const rides = [
-  ['Ikeja', '12:45 PM', '3/12/2018', 'Epic Tower', 'John', 1, 4, 'empty'],
+  ['Ikeja', '12:45 PM', '3/12/2018', 'Epic Tower', 'John', 1, 5, 'empty'],
   ['Lekki', '03:00 PM', '8/12/2018', 'Anthony bus terminal', 'Foo', 3, 5, 'empty'],
-  ['Oja', '05:00 PM', '8/8/2018', 'Iyana Ipaja bus stop', 'Dera', 2, 8, 'empty'],
+  ['Oja', '05:00 PM', '8/8/2018', 'Iyana Ipaja bus stop', 'Dera', 2, 1, 'empty'],
   ['Ikotun', '06:00 AM', '2/8/2018', 'Ikeja Along', 'Love', 6, 4, 'empty'],
-  ['Sango', '04:00 AM', '2/8/2018', 'Ipaja bus stop', 'John', 1, 7, 'empty'],
+  ['Sango', '04:00 AM', '2/8/2018', 'Ipaja bus stop', 'John', 1, 1, 'empty'],
 ];
 
 const requests = [
@@ -30,10 +30,11 @@ const requests = [
   ['John', 1, 2, 'pending'],
   ['Dera', 2, 1, 'pending'],
   ['Dera', 2, 2, 'pending'],
-  ['Love', 6, 1, 'pending'],
-  ['Peace', 4, 1, 'pending'],
-  ['Hetro', 5, 2, 'pending'],
+  ['Love', 6, 3, 'pending'],
+  ['Peace', 4, 2, 'pending'],
+  ['Hetro', 5, 3, 'pending'],
   ['Keneth', 7, 4, 'pending'],
+  ['Keneth', 7, 3, 'pending'],
   ['Henry', 8, 1, 'pending'],
 ];
 

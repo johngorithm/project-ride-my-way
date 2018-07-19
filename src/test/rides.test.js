@@ -3,7 +3,7 @@
 import chai, { expect, should } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
-import token from '../helpers/generateToken';
+import { token, token2, token3 } from '../helpers/generateToken';
 
 chai.use(chaiHttp);
 should();
@@ -86,7 +86,7 @@ describe('TESTS FOR RIDE MY WAY API RIDES` ENDPOINTS', () => {
   describe('POST A RIDE REQUEST ENDPOINT TESTS', () => {
     it('should return successfully when `id` of the ride being requested is found in the database and `request to join operation` is successful', (done) => {
       chai.request(app)
-        .post('/api/v1/rides/1/requests')
+        .post('/api/v1/rides/5/requests')
         .set('x-access-token', token)
         .end((error, response) => {
           response.status.should.equal(200);
@@ -102,7 +102,31 @@ describe('TESTS FOR RIDE MY WAY API RIDES` ENDPOINTS', () => {
         });
     });
 
-    it('should fail when the ride been requested does not exists', (done) => {
+    it('should fail when requesting a specific ride more than once', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides/5/requests')
+        .set('x-access-token', token)
+        .end((error, response) => {
+          response.status.should.equal(403);
+          response.body.status.should.equal(false);
+          response.body.should.have.property('error');
+          done();
+        });
+    });
+
+    it('should fail when requesting to join own ride', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides/3/requests')
+        .set('x-access-token', token)
+        .end((error, response) => {
+          response.status.should.equal(403);
+          response.body.status.should.equal(false);
+          response.body.should.have.property('error');
+          done();
+        });
+    });
+
+    it('should fail when the ride beign requested does not exists', (done) => {
       chai.request(app)
         .post('/api/v1/rides/56/requests')
         .set('x-access-token', token)
@@ -122,6 +146,31 @@ describe('TESTS FOR RIDE MY WAY API RIDES` ENDPOINTS', () => {
           response.status.should.equal(400);
           response.body.status.should.equal(false);
           response.body.should.have.property('error');
+          done();
+        });
+    });
+
+    it('should accept request successfully', (done) => {
+      chai.request(app)
+        .put('/api/v1/users/rides/5/requests/10')
+        .set('x-access-token', token3)
+        .query({ action: 'accept' })
+        .end((error, response) => {
+          response.status.should.equal(200);
+          response.body.status.should.equal(true);
+          expect(error).to.equal(null);
+          done();
+        });
+    });
+
+    it('should fail when RIDE capacity is fully occupied', (done) => {
+      chai.request(app)
+        .post('/api/v1/rides/5/requests')
+        .set('x-access-token', token2)
+        .end((error, response) => {
+          expect(response).to.have.status(403);
+          response.body.status.should.equal(false);
+          response.body.error.should.equal('No Vacant Space In Ride');
           done();
         });
     });
