@@ -12,7 +12,7 @@
     "start:dev": "nodemon --exec babel-node src/app.js",
     "go": "npm run build && npm start",
     "test:build": "nyc --reporter=html --reporter=text mocha ./build/test/*.test.js  --exit",
-    "test": "nyc --reporter=html --reporter=text mocha ./src/test/*.test.js  --compilers js:babel-core/register --exit",
+    "test": "nyc --reporter=html --reporter=text mocha ./src/test/*.test.js  --compilers js:babel-core/register --exit --timeout=20000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate": "babel-node ./src/models/databaseMigrations",
     "migration": "babel-node ./src/models/productionDatabaseMigration"
@@ -23,7 +23,7 @@
       "**/src/config/**"
     ]
   },
-  "author": "",
+  "author": "Johngorithm",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^2.0.1",

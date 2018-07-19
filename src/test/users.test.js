@@ -3,7 +3,7 @@
 import chai, { expect, should } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
-import token from '../helpers/generateToken';
+import { token } from '../helpers/generateToken';
 
 chai.use(chaiHttp);
 should();
@@ -46,7 +46,7 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
         });
     });
 
-    it('should return with a status code of 400 : Bad Request when a post request is made with no data', (done) => {
+    it('should fail when a post request is made with no data', (done) => {
       chai.request(app)
         .post('/api/v1/users/rides')
         .set('x-access-token', token)
@@ -58,7 +58,7 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
     });
 
 
-    it('should return with a status code of 400 : Bad Request when required post properties exist but having empty strings as value', (done) => {
+    it('should fail when required post properties exist but having empty strings as value', (done) => {
       chai.request(app)
         .post('/api/v1/users/rides')
         .set('x-access-token', token)
@@ -107,12 +107,46 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
         });
     });
 
+    it('should fail when capacity is a string of a floating point number', (done) => {
+      chai.request(app)
+        .post('/api/v1/users/rides')
+        .set('x-access-token', token)
+        .send({
+          destination: 'Ilupeju',
+          time: '03:00 pm',
+          date: '1/14/2018',
+          takeOffVenue: 'somewhere',
+          capacity: '5.6',
+        })
+        .end((error, response) => {
+          response.status.should.equal(400);
+          done();
+        });
+    });
+
     it('should fail when `capacity` receives a string input that is not a number', (done) => {
       chai.request(app)
         .post('/api/v1/users/rides')
         .set('x-access-token', token)
         .send({
           destination: 'Ilupeju',
+          time: '03: 00 pm',
+          date: '1/14/2018',
+          takeOffVenue: 'somewhere',
+          capacity: 'isNaN54',
+        })
+        .end((error, response) => {
+          response.status.should.equal(400);
+          done();
+        });
+    });
+
+    it('should fail when unexpected datatype is posted', (done) => {
+      chai.request(app)
+        .post('/api/v1/users/rides')
+        .set('x-access-token', token)
+        .send({
+          destination: {},
           time: '03: 00 pm',
           date: '1/14/2018',
           takeOffVenue: 'somewhere',
@@ -177,7 +211,7 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
   });
 
   describe('ACCEPT OR REJECT A RIDE REQUEST', () => {
-    it('should return successfully when ride ID and request ID are valid and found in the database and action is specified', (done) => {
+    it('should return successfully when ride ID and request ID are valid and found in the database, action is specified and user is the ride creator', (done) => {
       chai.request(app).put('/api/v1/users/rides/3/requests/1')
         .set('x-access-token', token)
         .query({ action: 'accept' })
@@ -190,7 +224,7 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
     });
 
     it('should fail when query parameter value is neither `accept` or `reject`', (done) => {
-      chai.request(app).put('/api/v1/users/rides/1/requests/5')
+      chai.request(app).put('/api/v1/users/rides/3/requests/5')
         .set('x-access-token', token)
         .query({ action: 'notacceptorreject' })
         .end((error, response) => {
@@ -201,7 +235,7 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
     });
 
     it('should fail when query parameter is not specified', (done) => {
-      chai.request(app).put('/api/v1/users/rides/1/requests/2')
+      chai.request(app).put('/api/v1/users/rides/3/requests/2')
         .set('x-access-token', token)
         .end((error, response) => {
           expect(response).to.have.status(400);
@@ -211,7 +245,7 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
     });
 
     it('should fail when query parameter is not of type `string`', (done) => {
-      chai.request(app).put('/api/v1/users/rides/1/requests/2')
+      chai.request(app).put('/api/v1/users/rides/3/requests/2')
         .set('x-access-token', token)
         .query({ action: {} })
         .end((error, response) => {
@@ -221,26 +255,95 @@ describe('TEST API USER`S ENDPOINTS TESTS', () => {
         });
     });
 
-    it('should fail when RIDE or REQUEST ID is INVALID', (done) => {
-      chai.request(app).put('/api/v1/users/rides/id2/requests/id4')
+    it('should fail when RIDE ID is INVALID', (done) => {
+      chai.request(app).put('/api/v1/users/rides/id2/requests/1')
         .set('x-access-token', token)
         .query({ action: 'reject' })
         .end((error, response) => {
           expect(response).to.have.status(400);
           response.body.status.should.equal(false);
-          response.body.error.should.equal('Invalid Ride or Request ID');
+          done();
+        });
+    });
+
+    it('should fail when RIDE is NOT Found', (done) => {
+      chai.request(app).put('/api/v1/users/rides/787/requests/1')
+        .set('x-access-token', token)
+        .query({ action: 'reject' })
+        .end((error, response) => {
+          expect(response).to.have.status(404);
+          response.body.status.should.equal(false);
+          done();
+        });
+    });
+
+    it('should fail when RIDE was not created by the user making this request', (done) => {
+      chai.request(app).put('/api/v1/users/rides/1/requests/1')
+        .set('x-access-token', token)
+        .query({ action: 'reject' })
+        .end((error, response) => {
+          expect(response).to.have.status(403);
+          response.body.status.should.equal(false);
+          done();
+        });
+    });
+
+    it('should fail when REQUEST ID is INVALID', (done) => {
+      chai.request(app).put('/api/v1/users/rides/3/requests/2id')
+        .set('x-access-token', token)
+        .query({ action: 'reject' })
+        .end((error, response) => {
+          expect(response).to.have.status(400);
+          response.body.status.should.equal(false);
           done();
         });
     });
 
     it('should fail when REQUEST ID is not FOUND', (done) => {
-      chai.request(app).put('/api/v1/users/rides/1/requests/100')
+      chai.request(app).put('/api/v1/users/rides/3/requests/100')
         .set('x-access-token', token)
         .query({ action: 'reject' })
         .end((error, response) => {
           expect(response).to.have.status(404);
           response.body.status.should.equal(false);
           response.body.error.should.equal('Request Not Found');
+          done();
+        });
+    });
+
+    it('should fail when a user tries to `accept` or `reject` a request after either action has taken place', (done) => {
+      chai.request(app).put('/api/v1/users/rides/3/requests/1')
+        .set('x-access-token', token)
+        .query({ action: 'reject' })
+        .end((error, response) => {
+          expect(response).to.have.status(403);
+          response.body.status.should.equal(false);
+          response.body.error.should.contain('reject');
+          done();
+        });
+    });
+
+    it('should fail when a user tries to accept more REQUESTS than the RIDE capacity', (done) => {
+      chai.request(app).put('/api/v1/users/rides/3/requests/5')
+        .set('x-access-token', token)
+        .query({ action: 'ACCEPT' })
+        .end((error, response) => {
+          expect(response).to.have.status(403);
+          response.body.status.should.equal(false);
+          response.body.error.should.equal('No Vacant Space In Ride');
+          done();
+        });
+    });
+
+    it('should REJECT a REQUEST successfully after capacity has been reached', (done) => {
+      chai.request(app).put('/api/v1/users/rides/3/requests/5')
+        .set('x-access-token', token)
+        .query({ action: 'REJECT' })
+        .end((error, response) => {
+          expect(response).to.have.status(200);
+          expect(error).to.equal(null);
+          response.body.status.should.equal(true);
+          response.body.message.should.equal('Request was successfully rejected');
           done();
         });
     });
