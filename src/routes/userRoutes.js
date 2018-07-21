@@ -10,5 +10,6 @@ userRouter.get('/rides/:rideId/requests', UserController.getAllRequestsForSpecif
 userRouter.put('/rides/:rideId/requests/:requestId', UserController.acceptOrRejectRideRequest);
 // FRONTEND SPECIFIC ROUTES
 userRouter.get('/me', UserController.getUserData);
+userRouter.get('/rides/offered', UserController.getRidesOfferedByUser);
 
 export default userRouter;

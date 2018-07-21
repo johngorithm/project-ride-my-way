@@ -248,6 +248,32 @@ class UserController {
       }
     });
   }
+
+  static getRidesOfferedByUser(req, res) {
+    const query = 'SELECT * FROM rides WHERE creator_id = $1';
+    pool.query(query, [req.decode.user_id], (error, rides) => {
+      if (error) {
+        res.status(500).json({
+          message: 'Something went wrong, Unable to get your ride offers',
+          status: false,
+          error: error.message,
+        });
+      } else if (rides.rows[0]) {
+        res.status(200).json({
+          message: 'Rides retrieved successfully',
+          status: true,
+          request: rides.rows,
+        });
+      } else {
+        res.status(404).json({
+          message: 'You have not offered any ride yet',
+          status: false,
+          request: 'Ride Not Found',
+        });
+      }
+    });
+  }
 }
+
 
 export default UserController;
