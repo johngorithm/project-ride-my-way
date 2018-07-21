@@ -223,6 +223,31 @@ class UserController {
       });
     }
   }
+
+  static getUserData(req, res) {
+    const query = 'SELECT user_id, firstname, lastname, username, email FROM users WHERE user_id = $1';
+    pool.query(query, [req.decode.user_id], (error, user) => {
+      if (error) {
+        res.status(500).json({
+          message: 'Something went wrong, Unable to get user data',
+          status: false,
+          error: error.message,
+        });
+      } else if (user.rows[0]) {
+        res.status(200).json({
+          message: `Welcome ${user.rows[0].firstname}`,
+          status: true,
+          request: user.rows[0],
+        });
+      } else {
+        res.status(404).json({
+          message: 'This user does not exist',
+          status: false,
+          request: 'User Not Found',
+        });
+      }
+    });
+  }
 }
 
 export default UserController;
