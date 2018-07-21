@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import rideRoutes from './routes/rideRoutes';
 import indexRoute from './routes/indexRoute';
 import authRoutes from './routes/authRoutes';
@@ -9,7 +10,7 @@ import verifyToken from './middlewares/authMiddleware';
 dotenv.config();
 
 const app = express();
-
+app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
