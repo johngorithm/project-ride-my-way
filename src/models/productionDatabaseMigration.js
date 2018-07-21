@@ -39,7 +39,7 @@ const requestTableQuery = `CREATE TABLE IF NOT EXISTS requests (
 
 const notifyTableQuery = `CREATE TABLE IF NOT EXISTS notifications (
 notification_id SERIAL PRIMARY KEY,
-messages TEXT NOT NULL,
+message TEXT NOT NULL,
 sender_id INTEGER REFERENCES users (user_id) NOT NULL,
 sender VARCHAR (50) NOT NULL,
 receiver_id INTEGER REFERENCES users (user_id)  NOT NULL,
