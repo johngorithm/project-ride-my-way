@@ -273,6 +273,31 @@ class UserController {
       }
     });
   }
+
+  static getRidesTakenByUser(req, res) {
+    const query = 'SELECT rides.ride_id, destination, time, date, take_off_venue, creator, creator_id, capacity, space_occupied FROM rides INNER JOIN requests ON rides.ride_id = requests.ride_id AND requests.status = $1 AND requests.sender_id = $2';
+    pool.query(query, ['accepted', req.decode.user_id], (error, userRides) => {
+      if (error) {
+        res.status(500).json({
+          message: 'Something went wrong, Unable to get your ride offers',
+          status: false,
+          error: error.message,
+        });
+      } else if (userRides.rows[0]) {
+        res.status(200).json({
+          message: 'Rides retrieved successfully',
+          status: true,
+          request: userRides.rows,
+        });
+      } else {
+        res.status(404).json({
+          message: 'You have not taken any ride yet',
+          status: false,
+          request: 'Ride Not Found',
+        });
+      }
+    });
+  }
 }
 
 
