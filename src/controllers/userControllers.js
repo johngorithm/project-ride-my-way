@@ -225,7 +225,7 @@ class UserController {
   }
 
   static getUserData(req, res) {
-    const query = 'SELECT user_id, firstname, lastname, username, email FROM users WHERE user_id = $1';
+    const query = 'SELECT user_id, firstname, lastname, username, email, image_url FROM users WHERE user_id = $1';
     pool.query(query, [req.decode.user_id], (error, user) => {
       if (error) {
         res.status(500).json({
@@ -237,13 +237,13 @@ class UserController {
         res.status(200).json({
           message: `Welcome ${user.rows[0].firstname}`,
           status: true,
-          request: user.rows[0],
+          user: user.rows[0],
         });
       } else {
         res.status(404).json({
           message: 'This user does not exist',
           status: false,
-          request: 'User Not Found',
+          error: 'User Not Found',
         });
       }
     });
@@ -254,46 +254,97 @@ class UserController {
     pool.query(query, [req.decode.user_id], (error, rides) => {
       if (error) {
         res.status(500).json({
-          message: 'Something went wrong, Unable to get your ride offers',
+          message: 'Something went wrong, Unable to fetch ride offers',
           status: false,
           error: error.message,
         });
       } else if (rides.rows[0]) {
         res.status(200).json({
-          message: 'Rides retrieved successfully',
+          message: `Rides offered by ${req.decode.firstname} retrieved successfully`,
           status: true,
-          request: rides.rows,
+          rides: rides.rows,
         });
       } else {
         res.status(404).json({
           message: 'You have not offered any ride yet',
           status: false,
-          request: 'Ride Not Found',
+          error: 'Ride Not Found',
         });
       }
     });
   }
 
   static getRidesTakenByUser(req, res) {
-    const query = 'SELECT rides.ride_id, destination, time, date, take_off_venue, creator, creator_id, capacity, space_occupied FROM rides INNER JOIN requests ON rides.ride_id = requests.ride_id AND requests.status = $1 AND requests.sender_id = $2';
+    const query = `SELECT 
+    rides.ride_id, 
+    destination, 
+    time, 
+    date, 
+    take_off_venue, 
+    creator, 
+    creator_id, 
+    capacity, 
+    space_occupied 
+    FROM rides 
+    INNER JOIN requests 
+    ON rides.ride_id = requests.ride_id 
+    AND requests.status = $1 
+    AND requests.sender_id = $2`;
     pool.query(query, ['accepted', req.decode.user_id], (error, userRides) => {
       if (error) {
         res.status(500).json({
-          message: 'Something went wrong, Unable to get your ride offers',
+          message: 'Something went wrong, Unable to fetch rides you have taken',
           status: false,
           error: error.message,
         });
       } else if (userRides.rows[0]) {
         res.status(200).json({
-          message: 'Rides retrieved successfully',
+          message: `Rides taken by ${req.decode.firstname} retrieved successfully`,
           status: true,
-          request: userRides.rows,
+          rides: userRides.rows,
         });
       } else {
         res.status(404).json({
           message: 'You have not taken any ride yet',
           status: false,
-          request: 'Ride Not Found',
+          error: 'Ride Not Found',
+        });
+      }
+    });
+  }
+
+  static getRequestsForUser(req, res) {
+    const query = `SELECT 
+    request_id, 
+    sender, 
+    sender_id, 
+    requests.ride_id, 
+    rides.destination, 
+    rides.creator_id 
+    FROM requests 
+    INNER JOIN rides 
+    ON requests.ride_id = rides.ride_id 
+    AND creator_id = $1 
+    ORDER BY request_id DESC`;
+
+    pool.query(query, [req.decode.user_id], (error, userRequests) => {
+      if (error) {
+        res.status(500).json({
+          message: 'Something went wrong, Unable to fetch user\'s ride requests',
+          status: false,
+          error: error.message,
+        });
+      } else if (userRequests.rows[0]) {
+        res.status(200).json({
+          message: `${req.decode.firstname}'s ride requests retrieved successfully`,
+          status: true,
+          requests: userRequests.rows,
+        });
+      } else {
+        res.status(404).json({
+          message: 'You have not taken any ride yet',
+          status: false,
+          error: 'Ride Not Found',
         });
       }
     });

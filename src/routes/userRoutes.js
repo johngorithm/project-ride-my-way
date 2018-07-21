@@ -12,5 +12,6 @@ userRouter.put('/rides/:rideId/requests/:requestId', UserController.acceptOrReje
 userRouter.get('/me', UserController.getUserData);
 userRouter.get('/rides/offered', UserController.getRidesOfferedByUser);
 userRouter.get('/rides/taken', UserController.getRidesTakenByUser);
+userRouter.get('/rides/requests', UserController.getRequestsForUser);
 
 export default userRouter;
