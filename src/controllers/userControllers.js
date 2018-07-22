@@ -13,7 +13,7 @@ class UserController {
     pool.query('INSERT INTO rides (destination, time, date, take_off_venue, creator_id, creator, capacity, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [destination, time, date, takeOffVenue, creatorId, creator, capacity, 'empty'], (rideError, createdRide) => {
       if (rideError) {
         res.status(500).json({
-          message: 'Something went wrong, Ride could not be saved!',
+          message: 'Something went wrong, Unable to save ride',
           status: false,
           data: req.body,
           errors: rideError.message,
@@ -41,20 +41,20 @@ class UserController {
           });
         } else {
           res.status(500).json({
-            message: 'Something went wrong, Ride cannot be fetched',
+            message: 'Something went wrong, Unable to fetch ride',
             status: false,
             error: error.message,
           });
         }
       } else if (requests.rows[0]) {
         res.status(200).json({
-          message: 'Requests data retrieval was successful',
+          message: 'Requests retrieved successfully',
           status: true,
           requests: requests.rows,
         });
       } else {
         res.status(404).json({
-          message: 'There are no requests for this ride in store',
+          message: 'No request found for this ride',
           status: false,
           error: 'No Request Found!',
         });
@@ -81,13 +81,13 @@ class UserController {
         if (error) {
           if (error.code === '22P02') {
             res.status(400).json({
-              message: 'Your request contains INVALID ride ID',
+              message: 'Your request contains invalid ride ID',
               status: false,
               error: 'Invalid Ride ID',
             });
           } else {
             res.status(500).json({
-              message: 'Something went wrong, Ride was not fetched',
+              message: 'Something went wrong, Unable to fetch ride',
               status: false,
               error: error.message,
             });
@@ -98,7 +98,7 @@ class UserController {
               if (error1) {
                 if (error1.code === '22P02') {
                   res.status(400).json({
-                    message: 'Your request contains INVALID request ID',
+                    message: 'Your request contains invalid request ID',
                     status: false,
                     error: 'Invalid Request ID',
                   });
@@ -119,7 +119,7 @@ class UserController {
                       pool.query('UPDATE requests SET status = $1 WHERE request_id = $2 AND ride_id = $3 RETURNING *', ['accepted', requestId, rideId], (error2, updatedRequest) => {
                         if (error2) {
                           res.status(500).json({
-                            message: 'Something went wrong, Request cannot be updated',
+                            message: 'Something went wrong, Unable to update request',
                             status: false,
                             error: error2.message,
                           });
@@ -127,7 +127,7 @@ class UserController {
                           pool.query('UPDATE rides SET space_occupied = space_occupied + 1 WHERE ride_id = $1 RETURNING *', [updatedRequest.rows[0].ride_id], (error3) => {
                             if (error3) {
                               // WRITE ERROR LOG TO A FILE
-                              console.log(error3.message);
+                              throw new Error(error3.message);
                             } else {
                               // SEND NOTIFICATION
                               const message = `Your request to join a ride to ${ride.rows[0].destination} has been Accepted. Please keep to time`;
@@ -135,7 +135,7 @@ class UserController {
                               pool.query('INSERT INTO notifications (message, sender, sender_id, receiver_id) VALUES ($1, $2, $3, $4)', [message, req.decode.firstname, req.decode.user_id, updatedRequest.rows[0].sender_id], (error5) => {
                                 if (error5) {
                                   // WRITE ERROR LOG TO A FILE
-                                  console.log(error5.message);
+                                  throw new Error(error5.message);
                                 } else {
                                   res.status(200).json({
                                     message: 'Request was successfully accepted',
@@ -162,7 +162,7 @@ class UserController {
                     pool.query('UPDATE requests SET status = $1 WHERE request_id = $2 AND ride_id = $3 RETURNING *', ['rejected', requestId, rideId], (error4, updatedRequest) => {
                       if (error4) {
                         res.status(500).json({
-                          message: 'Something went wrong, Request cannot be updated',
+                          message: 'Something went wrong, Unable to update request',
                           status: false,
                           error: error4.message,
                         });
@@ -173,7 +173,7 @@ class UserController {
                         pool.query('INSERT INTO notifications (message, sender, sender_id, receiver_id) VALUES ($1, $2, $3, $4)', [message, req.decode.firstname, req.decode.user_id, updatedRequest.rows[0].sender_id], (error6) => {
                           if (error6) {
                             // WRITE ERROR LOG TO A FILE
-                            console.log(error6.message);
+                            throw new Error(error6.message);
                           } else {
                             res.status(200).json({
                               message: 'Request was successfully rejected',
@@ -250,25 +250,26 @@ class UserController {
   }
 
   static getRidesOfferedByUser(req, res) {
-    const query = 'SELECT * FROM rides WHERE creator_id = $1';
-    pool.query(query, [req.decode.user_id], (error, rides) => {
+    const query = 'SELECT * FROM rides WHERE creator_id = $1 ORDER BY ride_id DESC';
+    pool.query(query, [req.decode.user_id], (error, ridesOffered) => {
       if (error) {
         res.status(500).json({
-          message: 'Something went wrong, Unable to fetch ride offers',
+          message: 'Something went wrong, Unable to fetch offered rides',
           status: false,
           error: error.message,
         });
-      } else if (rides.rows[0]) {
+      } else if (ridesOffered.rows[0]) {
         res.status(200).json({
           message: `Rides offered by ${req.decode.firstname} retrieved successfully`,
           status: true,
-          rides: rides.rows,
+          rides: ridesOffered.rows,
+          total: ridesOffered.rowCount,
         });
       } else {
         res.status(404).json({
           message: 'You have not offered any ride yet',
           status: false,
-          error: 'Ride Not Found',
+          error: 'No Ride Found',
         });
       }
     });
@@ -289,11 +290,11 @@ class UserController {
     INNER JOIN requests 
     ON rides.ride_id = requests.ride_id 
     AND requests.status = $1 
-    AND requests.sender_id = $2`;
+    AND requests.sender_id = $2 ORDER BY ride_id DESC`;
     pool.query(query, ['accepted', req.decode.user_id], (error, userRides) => {
       if (error) {
         res.status(500).json({
-          message: 'Something went wrong, Unable to fetch rides you have taken',
+          message: 'Something went wrong, Unable to fetch rides that you have taken',
           status: false,
           error: error.message,
         });
@@ -302,12 +303,13 @@ class UserController {
           message: `Rides taken by ${req.decode.firstname} retrieved successfully`,
           status: true,
           rides: userRides.rows,
+          total: userRides.rowCount,
         });
       } else {
         res.status(404).json({
           message: 'You have not taken any ride yet',
           status: false,
-          error: 'Ride Not Found',
+          error: 'No Ride Found',
         });
       }
     });
@@ -330,7 +332,7 @@ class UserController {
     pool.query(query, [req.decode.user_id], (error, userRequests) => {
       if (error) {
         res.status(500).json({
-          message: 'Something went wrong, Unable to fetch user\'s ride requests',
+          message: 'Something went wrong, Unable to fetch your ride requests',
           status: false,
           error: error.message,
         });
@@ -339,12 +341,13 @@ class UserController {
           message: `${req.decode.firstname}'s ride requests retrieved successfully`,
           status: true,
           requests: userRequests.rows,
+          total: userRequests.rowCount,
         });
       } else {
         res.status(404).json({
-          message: 'You have not taken any ride yet',
+          message: 'You have not received any request yet',
           status: false,
-          error: 'Ride Not Found',
+          error: 'No Request Found',
         });
       }
     });
