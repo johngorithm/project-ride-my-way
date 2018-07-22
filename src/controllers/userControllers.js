@@ -322,7 +322,8 @@ class UserController {
     sender_id, 
     requests.ride_id, 
     rides.destination, 
-    rides.creator_id 
+    rides.creator_id,
+    requests.status
     FROM requests 
     INNER JOIN rides 
     ON requests.ride_id = rides.ride_id 
