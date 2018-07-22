@@ -20,14 +20,14 @@ class AuthController {
       if (error) {
         if (error.code === '23505') {
           res.status(403).json({
-            message: 'This user already exist in our database, Please login instead',
+            message: 'This user already exist, Please login instead',
             status: false,
             data: req.body,
             error: error.message,
           });
         } else {
           res.status(500).json({
-            message: 'Ooops!, Something went wrong, user could not be saved.',
+            message: 'Something went wrong, Unable to register user',
             status: false,
             data: req.body,
             error: error.message,
@@ -43,7 +43,7 @@ class AuthController {
         jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' }, (tokenError, token) => {
           if (tokenError) {
             res.status(500).json({
-              message: 'Your registeration was successful but we are unable to generate a token to Login you in, Please login with your credentials',
+              message: 'Registration successful but unable to generate login token, Please login with your credentials',
               status: false,
               error: 'Unable To Generate Token',
             });
@@ -66,7 +66,7 @@ class AuthController {
     pool.query('SELECT * FROM users WHERE username = $1', [username], (error, user) => {
       if (error) {
         res.status(500).json({
-          message: 'Something went wrong, user data retrieval was not successful!',
+          message: 'Something went wrong, Unable to fetch user data, Please try again',
           status: false,
           data: req.body,
           error: error.message,

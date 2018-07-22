@@ -4,17 +4,17 @@ import pool from '../config/databaseConfig';
 
 class RideController {
   static getAllRides(req, res) {
-    const query = 'SELECT * FROM rides';
+    const query = 'SELECT * FROM rides ORDER BY ride_id DESC';
     pool.query(query, (error, returnedRides) => {
       if (error) {
         res.status(500).json({
-          message: 'Something went wrong, Ride cannot be fetched',
+          message: 'Something went wrong, Unable to fetch rides',
           status: false,
-          error: 'Unable to fetch ride data',
+          error: 'Unable To Fetch Ride Offers',
         });
       } else if (returnedRides.rows[0]) {
         res.status(200).json({
-          message: 'All rides retrieved successfully',
+          message: 'Rides retrieved successfully',
           status: true,
           rides: returnedRides.rows,
         });
@@ -22,7 +22,7 @@ class RideController {
         res.status(404).json({
           message: 'The database has no ride offer stored',
           status: false,
-          error: 'Rides Not Found!',
+          error: 'Ride Not Found!',
         });
       }
     });
@@ -38,24 +38,24 @@ class RideController {
           res.status(400).json({
             message: 'The ride ID of this request is invalid',
             status: false,
-            error: error.message,
+            error: 'Invalid Ride ID',
           });
         } else {
           res.status(500).json({
-            message: 'Something went wrong, Ride cannot be fetched',
+            message: 'Something went wrong, Unable to fetch',
             status: false,
-            error: error.code,
+            error: error.message,
           });
         }
       } else if (requestedRide.rows[0]) {
         res.status(200).json({
-          message: 'Ride data retrieval was successful',
+          message: 'Ride offer retrieved successfully',
           status: true,
           ride: requestedRide.rows[0],
         });
       } else {
         res.status(404).json({
-          message: 'This ride offer does not exist or may have been deleted',
+          message: 'Ride offer does not exist or has been deleted',
           status: false,
           error: 'Ride Not Found!',
         });
@@ -74,13 +74,13 @@ class RideController {
       if (error) {
         if (error.code === '22P02') {
           res.status(400).json({
-            message: 'Your request contains INVALID ride ID',
+            message: 'Your request contains invalid ride ID',
             status: false,
             error: 'Invalid Ride ID',
           });
         } else {
           res.status(500).json({
-            message: 'Something went wrong, Ride was not fetched',
+            message: 'Something went wrong, Unable to fetch ride',
             status: false,
             error: error.message,
           });
@@ -98,7 +98,7 @@ class RideController {
           pool.query('SELECT EXISTS (SELECT 1 FROM requests WHERE ride_id = $1 AND sender_id = $2) AS "hasRequested"', [rideId, req.decode.user_id], (error3, request) => {
             if (error3) {
               res.status(500).json({
-                message: 'Something went wrong, Was not able to determine your ride request already exists',
+                message: 'Something went wrong, Unable to determine if ride exists',
                 status: false,
                 error: error3.message,
               });
@@ -111,13 +111,13 @@ class RideController {
                 pool.query(query, queryValues, (error2, newRequest) => {
                   if (error2) {
                     res.status(500).json({
-                      message: 'Something went wrong, Request was not saved',
+                      message: 'Something went wrong, Unable to save request',
                       status: false,
                       error: error2.message,
                     });
                   } else if (newRequest.rows[0]) {
                     res.status(200).json({
-                      message: 'Your request was successfully received. You will be notified when accepted or rejected',
+                      message: 'Your request was successfully received.',
                       status: true,
                       request: newRequest.rows[0],
                     });
@@ -126,7 +126,7 @@ class RideController {
               } else {
                 // RIDE IS OCCUPIED 403
                 res.status(403).json({
-                  message: 'This Ride is fully occupied',
+                  message: 'Ride is fully occupied',
                   status: false,
                   error: 'No Vacant Space In Ride',
                 });
@@ -134,7 +134,7 @@ class RideController {
             } else {
               // REQUEST ALREADY EXIST
               res.status(403).json({
-                message: 'Sorry, You cannot request a ride more than once',
+                message: 'Sorry, You have already requested this ride',
                 status: false,
                 error: 'Request Already Exist',
               });
@@ -144,7 +144,7 @@ class RideController {
       } else {
         // RIDE NO EXIST
         res.status(404).json({
-          message: 'You are requesting to join a ride that does not exist',
+          message: 'You are requesting to join a non existing ride',
           status: false,
           error: 'Ride Not Found',
         });
