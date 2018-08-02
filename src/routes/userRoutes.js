@@ -13,5 +13,6 @@ userRouter.get('/me', UserController.getUserData);
 userRouter.get('/rides/offered', UserController.getRidesOfferedByUser);
 userRouter.get('/rides/taken', UserController.getRidesTakenByUser);
 userRouter.get('/rides/requests', UserController.getRequestsForUser);
+userRouter.get('/me/notifications', UserController.getUserNotifications);
 
 export default userRouter;

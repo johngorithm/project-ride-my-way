@@ -353,6 +353,44 @@ class UserController {
       }
     });
   }
+
+  static getUserNotifications(req, res) {
+    const query = `SELECT 
+      message,
+      received_on,
+      image_url,
+      username,
+      firstname,
+      lastname,
+      email
+      FROM notifications
+      INNER JOIN users
+      ON sender_id = user_id
+      WHERE receiver_id = $1
+      ORDER BY notification_id DESC
+    `;
+    pool.query(query, [req.decode.user_id], (error, notifications) => {
+      if (error) {
+        res.status(500).json({
+          message: 'Something went wrong, Unable to fetch your ride requests',
+          status: false,
+          error: error.message,
+        });
+      } else if (notifications.rows[0]) {
+        res.status(200).json({
+          message: `${req.decode.firstname}'s notifications retrieved successfully`,
+          status: true,
+          notifications: notifications.rows,
+        });
+      } else {
+        res.status(404).json({
+          message: 'You have not received any notification yet',
+          status: false,
+          error: 'No Notification Found',
+        });
+      }
+    });
+  }
 }
 
 
